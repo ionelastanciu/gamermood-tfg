@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: gamermood-backend
+
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+
+server:
+  port: ${SERVER_PORT:8081}
+
+jwt:
+  secret: ${JWT_SECRET:changeme}
+  expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+openai:
+  api-key: ${OPENAI_API_KEY:changeme}
+
+logging:
+  level:
+    root: INFO
+    org.springframework.security: INFO
