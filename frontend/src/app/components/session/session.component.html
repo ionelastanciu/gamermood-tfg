@@ -1,0 +1,110 @@
+<div class="session-container">
+    <a routerLink="/" class="back-home">
+        <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        Inicio
+    </a>
+
+    <div class="session-content">
+        <div class="session-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="8" r="7"></circle>
+                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+            </svg>
+            <h2>¿Cómo fue tu Sesión?</h2>
+            <p>Cuéntanos tu experiencia para darte los mejores consejos</p>
+        </div>
+
+        <div class="session-form">
+            <form (ngSubmit)="onSubmit()">
+                <div class="form-section">
+                    <label>¿Cómo te sientes ahora?</label>
+                    <div class="mood-grid">
+                        <button type="button" 
+                                class="mood-btn happy" 
+                                [class.selected]="selectedMood === 'happy'"
+                                (click)="selectMood('happy')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                            </svg>
+                            <p>Genial</p>
+                        </button>
+
+                        <button type="button" 
+                                class="mood-btn neutral" 
+                                [class.selected]="selectedMood === 'neutral'"
+                                (click)="selectMood('neutral')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="8" y1="15" x2="16" y2="15"></line>
+                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                            </svg>
+                            <p>Normal</p>
+                        </button>
+
+                        <button type="button" 
+                                class="mood-btn sad" 
+                                [class.selected]="selectedMood === 'sad'"
+                                (click)="selectMood('sad')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
+                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                            </svg>
+                            <p>Frustrado</p>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <label for="game">¿A qué has jugado?</label>
+                    <input type="text" 
+                           id="game" 
+                           [(ngModel)]="game" 
+                           name="game"
+                           placeholder="Nombre del juego" 
+                           required 
+                           style="width: 100%; padding: 0.75rem 1rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.5rem; color: white; font-size: 1rem;">
+                </div>
+
+                <div class="form-section">
+                    <label for="intensity">
+                        Intensidad emocional: <span class="range-value">{{intensity}}</span>/10
+                    </label>
+                    <div class="range-container">
+                        <input type="range" 
+                               id="intensity" 
+                               [(ngModel)]="intensity" 
+                               name="intensity"
+                               min="1" 
+                               max="10">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <label for="experience">Cuéntanos tu experiencia</label>
+                    <textarea id="experience" 
+                              [(ngModel)]="experience" 
+                              name="experience"
+                              placeholder="¿Qué pasó? ¿Cómo te sentiste? Desahógate aquí..." 
+                              required></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="9 11 12 14 22 4"></polyline>
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                    </svg>
+                    Obtener Consejos
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
