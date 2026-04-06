@@ -1,0 +1,25 @@
+# General
+.DS_Store
+Thumbs.db
+.env
+*.log
+
+# IDE
+.idea/
+.vscode/
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+coverage/
+
+# Java / Spring
+target/
+*.class
+*.jar
+*.war
+
+# OS / temp
+tmp/
+out/
