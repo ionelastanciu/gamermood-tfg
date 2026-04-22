@@ -286,18 +286,37 @@ body {
 
 .register-link {
     text-align: center;
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     color: #9ca3af;
-    margin-top: 1rem;
+    margin-top: 1.5rem;
 }
 
-.register-link span {
-    color: #ba68c8;
-    cursor: pointer;
+.register-link p {
+    margin-bottom: 0.6rem;
 }
 
-.register-link span:hover {
+.btn-secondary {
+    display: block;
+    width: 100%;
+    padding: 0.7rem 1rem;
+    background: transparent;
+    border: 1px solid rgba(186, 104, 200, 0.5);
+    border-radius: 0.5rem;
     color: #ce93d8;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    margin-top: 0.25rem;
+}
+
+.btn-secondary:hover {
+    background: rgba(186, 104, 200, 0.15);
+    border-color: #ba68c8;
+    color: white;
+    transform: translateY(-1px);
 }
 
 /* Session Page */
