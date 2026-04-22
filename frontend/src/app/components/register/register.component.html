@@ -42,7 +42,9 @@
           name="confirmPassword" placeholder="••••••••" required>
       </div>
 
-      <p *ngIf="errorMessage" class="error-msg">{{ errorMessage }}</p>
+      @if (errorMessage) {
+        <p class="error-msg">{{ errorMessage }}</p>
+      }
 
       <button type="submit" class="btn-submit">Crear Cuenta</button>
 
