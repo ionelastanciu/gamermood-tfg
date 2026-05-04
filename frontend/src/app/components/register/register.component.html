@@ -17,36 +17,84 @@
       <p>Únete a GamerMood</p>
     </div>
 
-    <form (ngSubmit)="onRegister()">
+    <form [formGroup]="form" (ngSubmit)="onRegister()">
+
+      <!-- Nombre de usuario -->
       <div class="form-group">
         <label for="username">Nombre de usuario</label>
-        <input type="text" id="username" [(ngModel)]="username" name="username"
-          placeholder="TuNombre" required>
+        <input
+          type="text"
+          id="username"
+          formControlName="username"
+          [class.input-error]="showError('username')"
+          placeholder="TuNombre">
+        @if (showError('username')) {
+          <span class="field-error">
+            @if (f['username'].errors?.['required']) { El nombre de usuario es obligatorio. }
+            @else if (f['username'].errors?.['minlength']) { Mínimo 3 caracteres. }
+          </span>
+        }
       </div>
 
+      <!-- Email -->
       <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" id="email" [(ngModel)]="email" name="email"
-          placeholder="tu@email.com" required>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          [class.input-error]="showError('email')"
+          placeholder="tu@email.com">
+        @if (showError('email')) {
+          <span class="field-error">
+            @if (f['email'].errors?.['required']) { El email es obligatorio. }
+            @else if (f['email'].errors?.['email']) { Introduce un email válido (ejemplo&#64;correo.com). }
+          </span>
+        }
       </div>
 
+      <!-- Contraseña -->
       <div class="form-group">
         <label for="password">Contraseña</label>
-        <input type="password" id="password" [(ngModel)]="password" name="password"
-          placeholder="••••••••" required>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          [class.input-error]="showError('password')"
+          placeholder="••••••••">
+        @if (showError('password')) {
+          <span class="field-error">
+            @if (f['password'].errors?.['required']) { La contraseña es obligatoria. }
+            @else if (f['password'].errors?.['minlength']) { Mínimo 8 caracteres. }
+            @else if (f['password'].errors?.['pattern']) { Debe contener letras y al menos un número. }
+          </span>
+        }
       </div>
 
+      <!-- Confirmar contraseña -->
       <div class="form-group">
         <label for="confirmPassword">Confirmar contraseña</label>
-        <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword"
-          name="confirmPassword" placeholder="••••••••" required>
+        <input
+          type="password"
+          id="confirmPassword"
+          formControlName="confirmPassword"
+          [class.input-error]="(submitted || !!f['confirmPassword'].touched) && (!!f['confirmPassword'].errors?.['required'] || form.hasError('passwordMismatch'))"
+          placeholder="••••••••">
+        @if ((submitted || f['confirmPassword'].touched) && f['confirmPassword'].errors?.['required']) {
+          <span class="field-error">Confirma tu contraseña.</span>
+        }
+        @if ((submitted || f['confirmPassword'].touched) && !f['confirmPassword'].errors?.['required'] && form.hasError('passwordMismatch')) {
+          <span class="field-error">Las contraseñas no coinciden.</span>
+        }
       </div>
 
-      @if (errorMessage) {
-        <p class="error-msg">{{ errorMessage }}</p>
-      }
-
-      <button type="submit" class="btn-submit">Crear Cuenta</button>
+      <button type="submit" class="btn-submit" [disabled]="submitted && form.invalid">
+        <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        Crear Cuenta
+      </button>
 
       <div class="register-link">
         <p>¿Ya tienes cuenta?</p>
