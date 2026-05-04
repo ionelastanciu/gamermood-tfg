@@ -6,14 +6,15 @@ import { RecommendationsComponent } from './components/recommendations/recommend
 import { RegisterComponent } from './components/register/register.component';
 import { RegisterSuccessComponent } from './components/register-success/register-success.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '',                 component: IndexComponent },
   { path: 'login',            component: LoginComponent },
   { path: 'register',         component: RegisterComponent },
   { path: 'register-success', component: RegisterSuccessComponent },
-  { path: 'dashboard',        component: DashboardComponent },
-  { path: 'session',          component: SessionComponent },
-  { path: 'recommendations',  component: RecommendationsComponent },
+  { path: 'dashboard',        component: DashboardComponent,       canActivate: [authGuard] },
+  { path: 'session',          component: SessionComponent,         canActivate: [authGuard] },
+  { path: 'recommendations',  component: RecommendationsComponent, canActivate: [authGuard] },
   { path: '**',               redirectTo: '' }
 ];
