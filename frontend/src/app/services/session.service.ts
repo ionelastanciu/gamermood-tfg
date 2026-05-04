@@ -5,12 +5,25 @@ import { SessionRequest, SessionResponse } from '../models/session.model';
 import { Recommendation, FeedbackRequest } from '../models/recommendation.model';
 import { AuthService } from './auth.service';
 
-const API = 'http://localhost:8081/api';
+const API          = 'http://localhost:8081/api';
+const SESSION_KEY  = 'gm_session';
 
 @Injectable({ providedIn: 'root' })
 export class SessionService {
 
   constructor(private http: HttpClient, private auth: AuthService) {}
+
+  // --- Fallback local (sin backend) ---
+
+  saveLocalSession(data: SessionRequest): void {
+    localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+  }
+
+  getLocalMood(): string {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return 'neutral';
+    return (JSON.parse(raw) as SessionRequest).mood ?? 'neutral';
+  }
 
   private headers(): HttpHeaders {
     return new HttpHeaders({ Authorization: `Bearer ${this.auth.getToken()}` });
