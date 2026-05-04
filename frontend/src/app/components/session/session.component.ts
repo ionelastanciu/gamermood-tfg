@@ -56,7 +56,7 @@ export class SessionComponent {
       },
       error: () => {
         // Backend no disponible: guardar datos localmente y continuar el flujo
-        localStorage.setItem('sessionData', JSON.stringify(body));
+        this.sessionService.saveLocalSession(body);
         this.router.navigate(['/recommendations']);
       }
     });

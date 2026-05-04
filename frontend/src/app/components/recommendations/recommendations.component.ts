@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { SessionService } from '../../services/session.service';
 
 interface GameItem {
   title:       string;
@@ -71,6 +72,8 @@ export class RecommendationsComponent implements OnInit {
   feedbackSent    = false;
   feedbackUseful: boolean | null = null;
 
+  constructor(private sessionService: SessionService) {}
+
   ngOnInit(): void {
     const sessionId: number | undefined = history.state?.sessionId;
 
@@ -80,14 +83,8 @@ export class RecommendationsComponent implements OnInit {
     }
 
     // Fallback: datos locales guardados por el formulario de sesión
-    const mood = this.getMoodFromStorage();
+    const mood = this.sessionService.getLocalMood();
     this.loadFromMock(mood);
-  }
-
-  private getMoodFromStorage(): string {
-    const raw = localStorage.getItem('sessionData');
-    if (!raw) return 'neutral';
-    return JSON.parse(raw).mood ?? 'neutral';
   }
 
   private loadFromMock(mood: string): void {
@@ -100,7 +97,7 @@ export class RecommendationsComponent implements OnInit {
     this.feedbackSent   = true;
     this.feedbackUseful = useful;
 
-    // TODO: llamar a SessionService.sendFeedback() cuando el backend esté disponible
+    // TODO: llamar cuando el backend esté disponible
     // const sessionId = history.state?.sessionId;
     // if (sessionId) {
     //   this.sessionService.sendFeedback({ recommendationId: sessionId, useful, comment: _comment || undefined });
