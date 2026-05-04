@@ -68,6 +68,9 @@ export class RecommendationsComponent implements OnInit {
   adviceList: string[]   = [];
   gamesList:  GameItem[] = [];
 
+  feedbackSent    = false;
+  feedbackUseful: boolean | null = null;
+
   ngOnInit(): void {
     const sessionId: number | undefined = history.state?.sessionId;
 
@@ -91,5 +94,16 @@ export class RecommendationsComponent implements OnInit {
     this.moodMessage = MOOD_MESSAGES[mood] ?? MOOD_MESSAGES['neutral'];
     this.adviceList  = MOCK_ADVICE[mood]   ?? MOCK_ADVICE['neutral'];
     this.gamesList   = MOCK_GAMES[mood]    ?? MOCK_GAMES['neutral'];
+  }
+
+  sendFeedback(useful: boolean, _comment: string): void {
+    this.feedbackSent   = true;
+    this.feedbackUseful = useful;
+
+    // TODO: llamar a SessionService.sendFeedback() cuando el backend esté disponible
+    // const sessionId = history.state?.sessionId;
+    // if (sessionId) {
+    //   this.sessionService.sendFeedback({ recommendationId: sessionId, useful, comment: _comment || undefined });
+    // }
   }
 }
