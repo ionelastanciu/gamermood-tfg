@@ -1,0 +1,41 @@
+.form-section input[type="text"],
+.form-section textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: white;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.3s;
+}
+
+.form-section input[type="text"]:focus,
+.form-section textarea:focus {
+  outline: none;
+  border-color: #7b1fa2;
+}
+
+.form-section input::placeholder,
+.form-section textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.input-error {
+  border-color: #f87171 !important;
+  background: rgba(248, 113, 113, 0.06) !important;
+}
+
+.field-error {
+  display: block;
+  color: #f87171;
+  font-size: 0.78rem;
+  margin-top: 0.4rem;
+}
+
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}

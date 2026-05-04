@@ -1,0 +1,177 @@
+.dashboard-container {
+  min-height: 100vh;
+}
+
+.btn-logout {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.5rem;
+  color: #d1d5db;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-logout:hover {
+  border-color: rgba(248, 113, 113, 0.5);
+  color: #f87171;
+}
+
+.dashboard-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.dashboard-subtitle {
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.btn-new-session-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  background: linear-gradient(to right, #7b1fa2, #c2185b);
+  border-radius: 0.5rem;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.25s;
+}
+
+.btn-new-session-link:hover {
+  background: linear-gradient(to right, #6a1b9a, #ad1457);
+  transform: translateY(-1px);
+}
+
+.mock-notice {
+  font-size: 0.78rem;
+  color: #6b7280;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 0.5rem;
+  padding: 0.6rem 1rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.sessions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.session-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border-left: 4px solid transparent;
+  transition: transform 0.2s;
+}
+
+.session-card:hover {
+  transform: translateY(-3px);
+}
+
+.mood-border-happy   { border-left-color: #81c784; }
+.mood-border-neutral { border-left-color: #ffd54f; }
+.mood-border-sad     { border-left-color: #f87171; }
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.game-name {
+  font-weight: bold;
+  font-size: 1.05rem;
+}
+
+.mood-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+}
+
+.mood-happy   { background: rgba(129, 199, 132, 0.2); color: #81c784; }
+.mood-neutral { background: rgba(255, 213, 79,  0.2); color: #ffd54f; }
+.mood-sad     { background: rgba(248, 113, 113, 0.2); color: #f87171; }
+
+.card-intensity {
+  font-size: 0.85rem;
+  color: #d1d5db;
+  margin-bottom: 0.5rem;
+}
+
+.card-experience {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-date {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-align: right;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 5rem 2rem;
+  color: #9ca3af;
+}
+
+.empty-state svg {
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 1rem;
+  color: #6b7280;
+}
+
+.empty-state p {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 640px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-new-session-link {
+    width: 100%;
+    justify-content: center;
+  }
+}

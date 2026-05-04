@@ -44,7 +44,7 @@ export class LoginComponent {
     this.auth.login(this.form.value).pipe(
       finalize(() => this.isLoading = false)
     ).subscribe({
-      next: () => this.router.navigate(['/session']),
+      next: () => this.router.navigate(['/dashboard']),
       error: (err) => {
         if (err.status === 401 || err.status === 403) {
           this.errorMessage = 'Email o contraseña incorrectos.';

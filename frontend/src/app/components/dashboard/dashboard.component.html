@@ -1,0 +1,71 @@
+<div class="dashboard-container">
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <svg class="icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M6 12h12M12 6v12"></path>
+          <rect x="2" y="7" width="20" height="10" rx="2"></rect>
+        </svg>
+        <h1>GamerMood</h1>
+      </div>
+      <button class="btn-logout" (click)="logout()">
+        <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"></path>
+        </svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </nav>
+
+  <main class="dashboard-content">
+
+    <div class="dashboard-header">
+      <div>
+        <h2 class="dashboard-title">Mis Sesiones</h2>
+        <p class="dashboard-subtitle">Tu historial emocional gaming</p>
+      </div>
+      <a routerLink="/session" class="btn-new-session-link">
+        <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Nueva sesión
+      </a>
+    </div>
+
+    <div class="mock-notice">
+      Datos de ejemplo — se conectará al historial real cuando el backend esté disponible.
+    </div>
+
+    @if (sessions.length > 0) {
+      <div class="sessions-grid">
+        @for (session of sessions; track session.id) {
+          <div class="session-card" [class]="'mood-border-' + session.mood">
+            <div class="card-top">
+              <span class="game-name">{{ session.game }}</span>
+              <span class="mood-badge" [class]="'mood-' + session.mood">
+                {{ moodLabels[session.mood] }}
+              </span>
+            </div>
+            <div class="card-intensity">
+              Intensidad emocional: <strong>{{ session.intensity }}/10</strong>
+            </div>
+            <p class="card-experience">{{ session.experience }}</p>
+            <div class="card-date">{{ formatDate(session.createdAt) }}</div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M6 12h12M12 6v12"></path>
+          <rect x="2" y="7" width="20" height="10" rx="2"></rect>
+        </svg>
+        <p>Todavía no tienes sesiones registradas.</p>
+        <a routerLink="/session" class="btn-cta">Crear tu primera sesión</a>
+      </div>
+    }
+
+  </main>
+</div>
