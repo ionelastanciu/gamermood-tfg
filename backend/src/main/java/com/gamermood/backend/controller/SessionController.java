@@ -3,7 +3,7 @@ package com.gamermood.backend.controller;
 import com.gamermood.backend.dto.SessionRequestDto;
 import com.gamermood.backend.dto.SessionResponseDto;
 import com.gamermood.backend.repository.UserRepository;
-import com.gamermood.backend.service.SessionServiceImpl;
+import com.gamermood.backend.service.SessionService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +17,10 @@ import java.util.List;
 @RequestMapping("/sessions")
 public class SessionController {
 
-    private final SessionServiceImpl sessionService;
+    private final SessionService sessionService;
     private final UserRepository userRepository;
 
-    public SessionController(SessionServiceImpl sessionService, UserRepository userRepository) {
+    public SessionController(SessionService sessionService, UserRepository userRepository) {
         this.sessionService = sessionService;
         this.userRepository = userRepository;
     }
