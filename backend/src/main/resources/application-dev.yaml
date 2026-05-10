@@ -1,0 +1,23 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: false
+
+server:
+  error:
+    include-message: always
+    include-stacktrace: on_param
+
+logging:
+  level:
+    root: INFO
+    com.gamermood: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.springframework.security: DEBUG
