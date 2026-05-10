@@ -8,6 +8,7 @@ import {
   ValidationErrors,
   Validators
 } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 function passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
   const pw      = group.get('password')?.value;
@@ -24,9 +25,15 @@ function passwordMatchValidator(group: AbstractControl): ValidationErrors | null
 })
 export class RegisterComponent {
   form: FormGroup;
-  submitted = false;
+  submitted    = false;
+  isLoading    = false;
+  errorMessage = '';
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(
+    private fb:     FormBuilder,
+    private auth:   AuthService,
+    private router: Router
+  ) {
     this.form = this.fb.group({
       username:        ['', [Validators.required, Validators.minLength(3)]],
       email:           ['', [Validators.required, Validators.email]],
@@ -43,8 +50,25 @@ export class RegisterComponent {
 
   onRegister(): void {
     this.submitted = true;
+    this.errorMessage = '';
+
     if (this.form.invalid) return;
-    // TODO: llamar a AuthService.register() cuando el endpoint esté disponible
-    this.router.navigate(['/register-success']);
+
+    this.isLoading = true;
+    const { username, email, password } = this.form.value;
+
+    this.auth.register({ username, email, password }).subscribe({
+      next: () => this.router.navigate(['/register-success']),
+      error: (err) => {
+        this.isLoading = false;
+        if (err.status === 409) {
+          this.errorMessage = 'Este email ya está registrado.';
+        } else if (err.status === 0) {
+          this.errorMessage = 'No se pudo conectar con el servidor.';
+        } else {
+          this.errorMessage = 'Ha ocurrido un error. Inténtalo de nuevo.';
+        }
+      }
+    });
   }
 }
