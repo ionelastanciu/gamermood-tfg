@@ -41,7 +41,7 @@ public class AuthServiceImpl implements AuthService {
             throw new EmailYaRegistradoException(dto.email());
         }
 
-        if (!dto.password().equals(dto.confirmPassword())) {
+        if (dto.confirmPassword() != null && !dto.password().equals(dto.confirmPassword())) {
             throw new IllegalArgumentException("Las contraseñas no coinciden");
         }
 

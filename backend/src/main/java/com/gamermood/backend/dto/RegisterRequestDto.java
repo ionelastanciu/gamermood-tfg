@@ -18,7 +18,6 @@ public record RegisterRequestDto(
         @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
         String password,
 
-        @NotBlank(message = "La confirmación de contraseña es obligatoria")
         String confirmPassword
 
 ) {}
