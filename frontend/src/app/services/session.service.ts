@@ -19,12 +19,6 @@ export class SessionService {
     localStorage.setItem(SESSION_KEY, JSON.stringify(data));
   }
 
-  getLocalMood(): string {
-    const raw = localStorage.getItem(SESSION_KEY);
-    if (!raw) return 'neutral';
-    return (JSON.parse(raw) as SessionRequest).mood ?? 'neutral';
-  }
-
   getLocalSession(): SessionRequest | null {
     const raw = localStorage.getItem(SESSION_KEY);
     if (!raw) return null;
