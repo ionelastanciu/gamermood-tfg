@@ -9,4 +9,6 @@ public interface AuthService {
     void register(RegisterRequestDto dto);
 
     AuthResponseDto login(LoginRequestDto dto);
+
+    AuthResponseDto refresh(String refreshToken);
 }

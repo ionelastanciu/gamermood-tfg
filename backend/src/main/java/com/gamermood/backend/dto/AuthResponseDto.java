@@ -4,6 +4,7 @@ import java.util.List;
 
 public record AuthResponseDto(
         String token,
+        String refreshToken,
         Long userId,
         String username,
         String email,

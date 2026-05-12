@@ -66,12 +66,34 @@ public class AuthServiceImpl implements AuthService {
             throw new CredencialesInvalidasException();
         }
 
-        String token = jwtService.generarToken(user.getEmail());
+        List<String> roles = user.getRoles().stream()
+                .map(Role::getNombre)
+                .toList();
+
+        String token        = jwtService.generarToken(user.getEmail(), user.getId(), user.getUsername(), roles);
+        String refreshToken = jwtService.generarRefreshToken(user.getEmail());
+
+        return new AuthResponseDto(token, refreshToken, user.getId(), user.getUsername(), user.getEmail(), roles);
+    }
+
+    @Override
+    public AuthResponseDto refresh(String refreshToken) {
+        String email = jwtService.extraerEmail(refreshToken);
+
+        if (!jwtService.esTokenValido(refreshToken, email)) {
+            throw new CredencialesInvalidasException();
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(CredencialesInvalidasException::new);
 
         List<String> roles = user.getRoles().stream()
                 .map(Role::getNombre)
                 .toList();
 
-        return new AuthResponseDto(token, user.getId(), user.getUsername(), user.getEmail(), roles);
+        String newToken        = jwtService.generarToken(user.getEmail(), user.getId(), user.getUsername(), roles);
+        String newRefreshToken = jwtService.generarRefreshToken(user.getEmail());
+
+        return new AuthResponseDto(newToken, newRefreshToken, user.getId(), user.getUsername(), user.getEmail(), roles);
     }
 }

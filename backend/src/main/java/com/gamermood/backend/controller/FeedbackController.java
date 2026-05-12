@@ -6,6 +6,8 @@ import com.gamermood.backend.service.FeedbackService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,11 +21,11 @@ public class FeedbackController {
     }
 
     // POST /api/feedback/{recomendacionId}
-    // El usuario envía si la recomendación le ha servido y un comentario opcional
     @PostMapping("/{recomendacionId}")
     public ResponseEntity<FeedbackResponseDto> enviar(
             @PathVariable Long recomendacionId,
-            @Valid @RequestBody FeedbackRequestDto dto) {
+            @Valid @RequestBody FeedbackRequestDto dto,
+            @AuthenticationPrincipal UserDetails userDetails) {
 
         FeedbackResponseDto respuesta = feedbackService.guardar(recomendacionId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
