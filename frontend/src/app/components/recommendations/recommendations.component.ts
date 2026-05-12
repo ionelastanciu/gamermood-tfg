@@ -90,6 +90,7 @@ export class RecommendationsComponent implements OnInit {
   feedbackUseful: boolean | null = null;
 
   readonly intensitySegments = Array.from({ length: 10 }, (_, i) => i + 1);
+  readonly flippedCards = new Set<number>();
 
   constructor(private sessionService: SessionService) {}
 
@@ -118,6 +119,19 @@ export class RecommendationsComponent implements OnInit {
 
   padNum(n: number): string {
     return n.toString().padStart(2, '0');
+  }
+
+  toggleCard(index: number): void {
+    if (this.flippedCards.has(index)) {
+      this.flippedCards.delete(index);
+    } else {
+      this.flippedCards.add(index);
+    }
+  }
+
+  gameCardClass(i: number): string {
+    const base = `game-card game-card-mood-${this.currentMood} game-card-interactive anim-scale-in`;
+    return this.flippedCards.has(i) ? base + ' card-open' : base;
   }
 
   sendFeedback(useful: boolean, _comment: string): void {

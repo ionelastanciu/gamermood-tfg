@@ -66,34 +66,61 @@
       </div>
     } @else {
       <div class="empty-state anim-scale-in anim-d2">
+
+        <span class="empty-tag">// SIN SESIONES //</span>
+
         <div class="empty-controller">
           <svg viewBox="0 0 80 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- cuerpo del mando -->
             <rect x="4" y="12" width="72" height="28" rx="14" stroke="currentColor" stroke-width="2.5"/>
-            <!-- cruceta izquierda -->
             <line x1="20" y1="22" x2="20" y2="34" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
             <line x1="14" y1="28" x2="26" y2="28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-            <!-- botones derecha -->
             <circle cx="58" cy="24" r="3" stroke="currentColor" stroke-width="2"/>
             <circle cx="66" cy="28" r="3" stroke="currentColor" stroke-width="2"/>
             <circle cx="58" cy="32" r="3" stroke="currentColor" stroke-width="2"/>
             <circle cx="50" cy="28" r="3" stroke="currentColor" stroke-width="2"/>
-            <!-- select / start -->
             <rect x="33" y="26" width="6" height="2" rx="1" fill="currentColor" opacity="0.5"/>
             <rect x="41" y="26" width="6" height="2" rx="1" fill="currentColor" opacity="0.5"/>
-            <!-- gatillos -->
             <path d="M16 12 Q18 4 26 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
             <path d="M64 12 Q62 4 54 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
           </svg>
         </div>
-        <p>Todavía no tienes sesiones registradas.</p>
-        <p class="empty-hint">Registra tu primera partida y empieza a conocerte</p>
+
+        <h3 class="empty-title">Tu historial está vacío</h3>
+        <p class="empty-body">
+          Aún no has registrado ninguna sesión de juego. Empieza ahora y GamerMood te ayudará a entender mejor tus emociones gaming.
+        </p>
+
+        <div class="empty-perks">
+          <span class="empty-perk">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+            Analiza tu estado
+          </span>
+          <span class="empty-perk">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M6 9H2V4h4M18 9h4V4h-4M3 4h18v5a9 9 0 0 1-18 0V4zM12 14v4M8 22h8"/>
+            </svg>
+            Consejos personalizados
+          </span>
+          <span class="empty-perk">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+              <line x1="9" y1="9" x2="9.01" y2="9"/>
+              <line x1="15" y1="9" x2="15.01" y2="9"/>
+            </svg>
+            Mejora tu experiencia
+          </span>
+        </div>
+
         <a routerLink="/session" class="btn-cta">
           <svg class="icon-bolt-lg" viewBox="0 0 24 24" fill="currentColor">
             <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
           </svg>
-          Crear tu primera sesión
+          Registrar primera sesión
         </a>
+
       </div>
     }
 

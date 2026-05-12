@@ -14,8 +14,9 @@ import { SessionRequest } from '../../models/session.model';
 })
 export class SessionComponent {
   form: FormGroup;
-  submitted = false;
-  isLoading = false;
+  submitted  = false;
+  isLoading  = false;
+  showOtherGame = false;
   readonly intensitySegments = Array.from({ length: 10 }, (_, i) => i + 1);
 
   constructor(
@@ -35,6 +36,20 @@ export class SessionComponent {
 
   selectMood(mood: string): void {
     this.form.patchValue({ mood });
+  }
+
+  onGameSelect(value: string): void {
+    if (value === 'other') {
+      this.showOtherGame = true;
+      this.form.patchValue({ game: '' });
+    } else {
+      this.showOtherGame = false;
+      this.form.patchValue({ game: value });
+    }
+  }
+
+  onOtherGameInput(value: string): void {
+    this.form.patchValue({ game: value });
   }
 
   onSubmit(): void {

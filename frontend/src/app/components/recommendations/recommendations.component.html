@@ -86,14 +86,26 @@
                 </svg>
                 Consejos para ti
             </h3>
-            <div class="advice-items">
-                @for (advice of adviceList; track advice; let i = $index) {
-                    <div class="advice-item" [style.animation-delay]="(300 + i * 70) + 'ms'">
-                        <span class="advice-num">{{padNum(i + 1)}}</span>
-                        <p>{{advice}}</p>
-                    </div>
-                }
-            </div>
+            @if (adviceList.length > 0) {
+                <div class="advice-items">
+                    @for (advice of adviceList; track advice; let i = $index) {
+                        <div class="advice-item" [style.animation-delay]="(300 + i * 70) + 'ms'">
+                            <span class="advice-num">{{padNum(i + 1)}}</span>
+                            <p>{{advice}}</p>
+                        </div>
+                    }
+                </div>
+            } @else {
+                <div class="section-empty">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    <p>No hay consejos disponibles para esta sesión.</p>
+                    <a routerLink="/session" class="section-empty-link">Registrar nueva sesión →</a>
+                </div>
+            }
         </section>
 
         <!-- ── Games section ────────────────────────────────── -->
@@ -105,19 +117,46 @@
                 </svg>
                 Juegos recomendados para tu estado
             </h3>
+            @if (gamesList.length > 0) {
             <div class="games-grid">
                 @for (game of gamesList; track game.title; let i = $index) {
-                    <div [class]="'game-card game-card-mood-' + currentMood + ' anim-scale-in'"
-                         [style.animation-delay]="(400 + i * 80) + 'ms'">
+                    <div [class]="gameCardClass(i)"
+                         [style.animation-delay]="(400 + i * 80) + 'ms'"
+                         (click)="toggleCard(i)"
+                         (keyup.enter)="toggleCard(i)"
+                         (keyup.space)="$event.preventDefault(); toggleCard(i)"
+                         tabindex="0"
+                         role="button"
+                         [attr.aria-expanded]="flippedCards.has(i)">
                         <div class="game-card-header">
                             <h4>{{game.title}}</h4>
                             <span class="badge-play">PLAY</span>
                         </div>
                         <div class="game-genre">{{game.genre}}</div>
-                        <p>{{game.description}}</p>
+                        <div class="card-expand-hint">
+                            <svg class="expand-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                            <span>{{ flippedCards.has(i) ? 'Ocultar' : 'Saber más' }}</span>
+                        </div>
+                        @if (flippedCards.has(i)) {
+                            <div class="card-desc">
+                                <p>{{game.description}}</p>
+                            </div>
+                        }
                     </div>
                 }
             </div>
+            } @else {
+                <div class="section-empty">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M6 12h12M12 6v12"/>
+                        <rect x="2" y="7" width="20" height="10" rx="2"/>
+                    </svg>
+                    <p>No hay juegos recomendados disponibles en este momento.</p>
+                    <a routerLink="/session" class="section-empty-link">Registrar nueva sesión →</a>
+                </div>
+            }
         </section>
 
         <!-- ── Feedback ─────────────────────────────────────── -->
