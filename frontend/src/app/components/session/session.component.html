@@ -83,12 +83,81 @@
                         </svg>
                         <span>¿A qué has jugado?</span>
                     </div>
-                    <input
-                        type="text"
-                        id="game"
-                        formControlName="game"
-                        [class.input-error]="submitted && f['game'].invalid"
-                        placeholder="Nombre del juego">
+                    <select #gameSelect
+                            class="game-select"
+                            [class.input-error]="submitted && f['game'].invalid"
+                            (change)="onGameSelect(gameSelect.value)">
+                        <option value="" disabled selected>Selecciona el juego...</option>
+                        <optgroup label="FPS / Disparos">
+                            <option value="Valorant">Valorant</option>
+                            <option value="CS2">CS2 (Counter-Strike 2)</option>
+                            <option value="Apex Legends">Apex Legends</option>
+                            <option value="Call of Duty: Warzone">Call of Duty: Warzone</option>
+                            <option value="Overwatch 2">Overwatch 2</option>
+                            <option value="Rainbow Six Siege">Rainbow Six Siege</option>
+                        </optgroup>
+                        <optgroup label="Battle Royale">
+                            <option value="Fortnite">Fortnite</option>
+                            <option value="PUBG: Battlegrounds">PUBG: Battlegrounds</option>
+                        </optgroup>
+                        <optgroup label="MOBA / Estrategia">
+                            <option value="League of Legends">League of Legends</option>
+                            <option value="Dota 2">Dota 2</option>
+                            <option value="Teamfight Tactics">Teamfight Tactics</option>
+                            <option value="Hearthstone">Hearthstone</option>
+                        </optgroup>
+                        <optgroup label="RPG / Aventura">
+                            <option value="Elden Ring">Elden Ring</option>
+                            <option value="The Witcher 3">The Witcher 3</option>
+                            <option value="Cyberpunk 2077">Cyberpunk 2077</option>
+                            <option value="Zelda: Tears of the Kingdom">Zelda: Tears of the Kingdom</option>
+                            <option value="God of War Ragnarök">God of War Ragnarök</option>
+                            <option value="Red Dead Redemption 2">Red Dead Redemption 2</option>
+                        </optgroup>
+                        <optgroup label="Roguelike / Indie">
+                            <option value="Hades">Hades</option>
+                            <option value="Celeste">Celeste</option>
+                            <option value="Hollow Knight">Hollow Knight</option>
+                            <option value="Dead Cells">Dead Cells</option>
+                            <option value="Slay the Spire">Slay the Spire</option>
+                        </optgroup>
+                        <optgroup label="Simulación / Sandbox">
+                            <option value="Minecraft">Minecraft</option>
+                            <option value="Stardew Valley">Stardew Valley</option>
+                            <option value="The Sims 4">The Sims 4</option>
+                            <option value="Animal Crossing: New Horizons">Animal Crossing: New Horizons</option>
+                        </optgroup>
+                        <optgroup label="Deportes / Carreras">
+                            <option value="EA Sports FC 25">EA Sports FC 25</option>
+                            <option value="Rocket League">Rocket League</option>
+                            <option value="Gran Turismo 7">Gran Turismo 7</option>
+                            <option value="Forza Horizon 5">Forza Horizon 5</option>
+                        </optgroup>
+                        <optgroup label="Lucha">
+                            <option value="Tekken 8">Tekken 8</option>
+                            <option value="Street Fighter 6">Street Fighter 6</option>
+                            <option value="Mortal Kombat 1">Mortal Kombat 1</option>
+                        </optgroup>
+                        <optgroup label="Terror / Horror">
+                            <option value="Resident Evil 4 Remake">Resident Evil 4 Remake</option>
+                            <option value="Dead by Daylight">Dead by Daylight</option>
+                            <option value="Phasmophobia">Phasmophobia</option>
+                        </optgroup>
+                        <optgroup label="MMO / Online">
+                            <option value="World of Warcraft">World of Warcraft</option>
+                            <option value="Final Fantasy XIV">Final Fantasy XIV</option>
+                        </optgroup>
+                        <option value="other">✏️ Otros...</option>
+                    </select>
+                    @if (showOtherGame) {
+                        <input
+                            type="text"
+                            class="game-other-input"
+                            [class.input-error]="submitted && f['game'].invalid"
+                            placeholder="Escribe el nombre del juego..."
+                            (input)="onOtherGameInput(otherGame.value)"
+                            #otherGame>
+                    }
                     @if (submitted && f['game'].invalid) {
                         <span class="field-error">Indica el juego de la sesión.</span>
                     }
@@ -151,16 +220,26 @@
                     }
                 </div>
 
-                <button type="submit" class="btn-submit" [disabled]="isLoading || (submitted && form.invalid)">
-                    @if (isLoading) {
-                        Guardando sesión...
-                    } @else {
-                        <svg class="icon-bolt-lg" viewBox="0 0 24 24" fill="currentColor">
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                <div class="form-actions">
+                    <button type="button" class="btn-reset" (click)="resetForm()" title="Limpiar todos los campos">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                            <path d="M3 3v5h5"/>
                         </svg>
-                        Obtener Consejos
-                    }
-                </button>
+                        Limpiar
+                    </button>
+                    <button type="submit" class="btn-submit" [disabled]="isLoading || (submitted && form.invalid)">
+                        @if (isLoading) {
+                            Guardando sesión...
+                        } @else {
+                            <svg class="icon-bolt-lg" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                            </svg>
+                            Guardar Sesión
+                        }
+                    </button>
+                </div>
+                <p class="form-save-note">Tu sesión se guardará en el historial y recibirás recomendaciones personalizadas</p>
 
             </form>
         </div>

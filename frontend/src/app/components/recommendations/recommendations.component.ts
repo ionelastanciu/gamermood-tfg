@@ -86,9 +86,11 @@ export class RecommendationsComponent implements OnInit {
   adviceList: string[]   = [];
   gamesList:  GameItem[] = [];
 
+  sessionId:       number | null = null;
   recommendationId: number | null = null;
   feedbackSent    = false;
   feedbackUseful: boolean | null = null;
+  retrying        = false;
 
   readonly intensitySegments = Array.from({ length: 10 }, (_, i) => i + 1);
 
@@ -96,15 +98,16 @@ export class RecommendationsComponent implements OnInit {
 
   ngOnInit(): void {
     const state     = history.state ?? {};
-    const sessionId: number | undefined = state.sessionId;
+    const sid: number | undefined = state.sessionId;
     const mood      = state.mood      ?? this.sessionService.getLocalSession()?.mood      ?? 'neutral';
     const game      = state.game      ?? this.sessionService.getLocalSession()?.game      ?? '';
     const intensity = state.intensity ?? this.sessionService.getLocalSession()?.intensity ?? 5;
 
     this.initDisplay(mood, game, intensity);
 
-    if (sessionId) {
-      this.sessionService.getRecommendation(sessionId).subscribe({
+    if (sid) {
+      this.sessionId = sid;
+      this.sessionService.getRecommendation(sid).subscribe({
         next: (rec) => {
           this.recommendationId = rec.id;
           this.adviceList = [rec.texto];
@@ -112,6 +115,21 @@ export class RecommendationsComponent implements OnInit {
         error: () => { /* mantiene el mock ya cargado */ }
       });
     }
+  }
+
+  retryRecommendation(): void {
+    if (!this.sessionId) return;
+    this.retrying = true;
+    this.sessionService.retryRecommendation(this.sessionId).subscribe({
+      next: (rec) => {
+        this.recommendationId = rec.id;
+        this.adviceList       = [rec.texto];
+        this.feedbackSent     = false;
+        this.feedbackUseful   = null;
+        this.retrying         = false;
+      },
+      error: () => { this.retrying = false; }
+    });
   }
 
   private initDisplay(mood: string, game: string, intensity: number): void {

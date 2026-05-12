@@ -52,4 +52,8 @@ export class SessionService {
   sendFeedback(recommendationId: number, body: FeedbackRequest): Observable<void> {
     return this.http.post<void>(`${API}/feedback/${recommendationId}`, body, { headers: this.headers() });
   }
+
+  retryRecommendation(sessionId: number): Observable<Recommendation> {
+    return this.http.post<Recommendation>(`${API}/recommendations/${sessionId}/retry`, {}, { headers: this.headers() });
+  }
 }
