@@ -39,10 +39,6 @@
       </a>
     </div>
 
-    <div class="mock-notice anim-fade-up anim-d1">
-      Datos de ejemplo — se conectará al historial real cuando el backend esté disponible.
-    </div>
-
     @if (sessions.length > 0) {
       <div class="sessions-grid">
         @for (session of sessions; track session.id; let i = $index) {
@@ -66,33 +62,52 @@
       </div>
     } @else {
       <div class="empty-state anim-scale-in anim-d2">
+        <span class="empty-tag">// SIN SESIONES //</span>
         <div class="empty-controller">
           <svg viewBox="0 0 80 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- cuerpo del mando -->
             <rect x="4" y="12" width="72" height="28" rx="14" stroke="currentColor" stroke-width="2.5"/>
-            <!-- cruceta izquierda -->
             <line x1="20" y1="22" x2="20" y2="34" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
             <line x1="14" y1="28" x2="26" y2="28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-            <!-- botones derecha -->
             <circle cx="58" cy="24" r="3" stroke="currentColor" stroke-width="2"/>
             <circle cx="66" cy="28" r="3" stroke="currentColor" stroke-width="2"/>
             <circle cx="58" cy="32" r="3" stroke="currentColor" stroke-width="2"/>
             <circle cx="50" cy="28" r="3" stroke="currentColor" stroke-width="2"/>
-            <!-- select / start -->
             <rect x="33" y="26" width="6" height="2" rx="1" fill="currentColor" opacity="0.5"/>
             <rect x="41" y="26" width="6" height="2" rx="1" fill="currentColor" opacity="0.5"/>
-            <!-- gatillos -->
             <path d="M16 12 Q18 4 26 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
             <path d="M64 12 Q62 4 54 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
           </svg>
         </div>
-        <p>Todavía no tienes sesiones registradas.</p>
-        <p class="empty-hint">Registra tu primera partida y empieza a conocerte</p>
-        <a routerLink="/session" class="btn-cta">
-          <svg class="icon-bolt-lg" viewBox="0 0 24 24" fill="currentColor">
-            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        <h3 class="empty-title">Tu historial está vacío</h3>
+        <p class="empty-body">Registra tu primera sesión de juego y empieza a conocer tu estado emocional gaming.</p>
+        <div class="empty-perks">
+          <span class="empty-perk">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+            </svg>
+            Historial personal
+          </span>
+          <span class="empty-perk">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+              <circle cx="12" cy="17" r=".5"/>
+            </svg>
+            Consejos personalizados
+          </span>
+          <span class="empty-perk">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+            Juegos recomendados
+          </span>
+        </div>
+        <a routerLink="/session" class="btn-new-session-link">
+          <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M6 12h12M12 6v12"/>
+            <rect x="2" y="7" width="20" height="10" rx="2"/>
           </svg>
-          Crear tu primera sesión
+          Registrar primera sesión
         </a>
       </div>
     }

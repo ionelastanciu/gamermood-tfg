@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
@@ -13,9 +13,12 @@ import { SessionRequest } from '../../models/session.model';
   styleUrls: ['./session.component.css']
 })
 export class SessionComponent {
+  @ViewChild('gameSelect') gameSelectRef!: ElementRef<HTMLSelectElement>;
+
   form: FormGroup;
-  submitted = false;
-  isLoading = false;
+  submitted     = false;
+  isLoading     = false;
+  showOtherGame = false;
   readonly intensitySegments = Array.from({ length: 10 }, (_, i) => i + 1);
 
   constructor(
@@ -37,6 +40,29 @@ export class SessionComponent {
     this.form.patchValue({ mood });
   }
 
+  onGameSelect(value: string): void {
+    if (value === 'other') {
+      this.showOtherGame = true;
+      this.form.patchValue({ game: '' });
+    } else {
+      this.showOtherGame = false;
+      this.form.patchValue({ game: value });
+    }
+  }
+
+  onOtherGameInput(value: string): void {
+    this.form.patchValue({ game: value });
+  }
+
+  resetForm(): void {
+    this.submitted     = false;
+    this.showOtherGame = false;
+    this.form.reset({ intensity: 5 });
+    if (this.gameSelectRef?.nativeElement) {
+      this.gameSelectRef.nativeElement.value = '';
+    }
+  }
+
   onSubmit(): void {
     this.submitted = true;
     if (this.form.invalid) return;
@@ -53,12 +79,20 @@ export class SessionComponent {
       finalize(() => this.isLoading = false)
     ).subscribe({
       next: (session) => {
-        this.router.navigate(['/recommendations'], { state: { sessionId: session.id } });
+        this.router.navigate(['/recommendations'], {
+          state: {
+            sessionId: session.id,
+            mood:      session.mood,
+            game:      session.game,
+            intensity: session.intensity
+          }
+        });
       },
       error: () => {
-        // Backend no disponible: guardar datos localmente y continuar el flujo
         this.sessionService.saveLocalSession(body);
-        this.router.navigate(['/recommendations']);
+        this.router.navigate(['/recommendations'], {
+          state: { mood: body.mood, game: body.game, intensity: body.intensity }
+        });
       }
     });
   }

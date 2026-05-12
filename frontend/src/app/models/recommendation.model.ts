@@ -1,13 +1,12 @@
 export interface Recommendation {
   id: number;
-  sessionId: number;
-  content: string;
-  category: string;
+  sesionId: number;
+  texto: string;
+  fuente: string;   // 'REGLAS' | 'OPENAI'
   createdAt: string;
 }
 
 export interface FeedbackRequest {
-  recommendationId: number;
-  useful: boolean;
-  comment?: string;
+  util: boolean;
+  comentario?: string;
 }

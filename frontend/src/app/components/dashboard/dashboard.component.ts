@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { SessionService } from '../../services/session.service';
 import { SessionResponse } from '../../models/session.model';
@@ -13,8 +15,6 @@ import { SessionResponse } from '../../models/session.model';
 })
 export class DashboardComponent implements OnInit {
   sessions: SessionResponse[] = [];
-  isLoading = true;
-  error     = false;
 
   readonly moodLabels: Record<string, string> = {
     happy:   'Genial',
@@ -29,16 +29,9 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadSessions();
-  }
-
-  loadSessions(): void {
-    this.isLoading = true;
-    this.error     = false;
-    this.sessionService.getSessions().subscribe({
-      next:  (data) => { this.sessions = data; this.isLoading = false; },
-      error: ()     => { this.error = true;     this.isLoading = false; }
-    });
+    this.sessionService.getSessions().pipe(
+      catchError(() => of([] as SessionResponse[]))
+    ).subscribe(data => { this.sessions = data; });
   }
 
   formatDate(iso: string): string {
