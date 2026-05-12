@@ -55,7 +55,11 @@ export class SessionComponent {
   }
 
   resetForm(): void {
+<<<<<<< HEAD
     this.submitted    = false;
+=======
+    this.submitted     = false;
+>>>>>>> feature/frontend-base-integration
     this.showOtherGame = false;
     this.form.reset({ intensity: 5 });
     if (this.gameSelectRef?.nativeElement) {
@@ -79,12 +83,20 @@ export class SessionComponent {
       finalize(() => this.isLoading = false)
     ).subscribe({
       next: (session) => {
-        this.router.navigate(['/recommendations'], { state: { sessionId: session.id } });
+        this.router.navigate(['/recommendations'], {
+          state: {
+            sessionId: session.id,
+            mood:      session.mood,
+            game:      session.game,
+            intensity: session.intensity
+          }
+        });
       },
       error: () => {
-        // Backend no disponible: guardar datos localmente y continuar el flujo
         this.sessionService.saveLocalSession(body);
-        this.router.navigate(['/recommendations']);
+        this.router.navigate(['/recommendations'], {
+          state: { mood: body.mood, game: body.game, intensity: body.intensity }
+        });
       }
     });
   }

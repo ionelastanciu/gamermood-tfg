@@ -1,34 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
+import { SessionService } from '../../services/session.service';
 import { SessionResponse } from '../../models/session.model';
-
-const MOCK_SESSIONS: SessionResponse[] = [
-  {
-    id: 1,
-    game: 'Valorant',
-    mood: 'sad',
-    intensity: 8,
-    experience: 'Muchas derrotas seguidas, empecé a tiltar bastante. Necesito un descanso.',
-    createdAt: '2026-05-03T22:15:00Z'
-  },
-  {
-    id: 2,
-    game: 'Minecraft',
-    mood: 'happy',
-    intensity: 6,
-    experience: 'Buena sesión creativa, muy relajante y productiva. Acabé mi base.',
-    createdAt: '2026-05-02T19:30:00Z'
-  },
-  {
-    id: 3,
-    game: 'League of Legends',
-    mood: 'neutral',
-    intensity: 5,
-    experience: 'Partida mediocre, sin emociones fuertes ni en un sentido ni en otro.',
-    createdAt: '2026-05-01T21:00:00Z'
-  }
-];
 
 @Component({
   selector: 'app-dashboard',
@@ -37,9 +13,8 @@ const MOCK_SESSIONS: SessionResponse[] = [
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent {
-  // TODO: reemplazar con llamada real a SessionService.getSessions()
-  sessions: SessionResponse[] = MOCK_SESSIONS;
+export class DashboardComponent implements OnInit {
+  sessions: SessionResponse[] = [];
 
   readonly moodLabels: Record<string, string> = {
     happy:   'Genial',
@@ -47,7 +22,17 @@ export class DashboardComponent {
     sad:     'Frustrado'
   };
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private auth:           AuthService,
+    private sessionService: SessionService,
+    private router:         Router
+  ) {}
+
+  ngOnInit(): void {
+    this.sessionService.getSessions().pipe(
+      catchError(() => of([] as SessionResponse[]))
+    ).subscribe(data => { this.sessions = data; });
+  }
 
   formatDate(iso: string): string {
     return new Date(iso).toLocaleDateString('es-ES', {

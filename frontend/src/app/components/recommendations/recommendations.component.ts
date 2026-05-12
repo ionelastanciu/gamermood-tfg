@@ -77,17 +77,20 @@ const MOCK_GAMES: Record<string, GameItem[]> = {
   styleUrls: ['./recommendations.component.css']
 })
 export class RecommendationsComponent implements OnInit {
-  moodMessage    = '';
-  moodLabel      = 'NORMAL';
-  resultTag      = '// SESIÓN COMPLETA //';
-  currentMood    = 'neutral';
-  sessionGame    = '';
+  moodMessage      = '';
+  moodLabel        = 'NORMAL';
+  resultTag        = '// SESIÓN COMPLETA //';
+  currentMood      = 'neutral';
+  sessionGame      = '';
   sessionIntensity = 5;
   adviceList: string[]   = [];
   gamesList:  GameItem[] = [];
 
+  sessionId:       number | null = null;
+  recommendationId: number | null = null;
   feedbackSent    = false;
   feedbackUseful: boolean | null = null;
+  retrying        = false;
 
   readonly intensitySegments = Array.from({ length: 10 }, (_, i) => i + 1);
   readonly flippedCards = new Set<number>();
@@ -95,21 +98,45 @@ export class RecommendationsComponent implements OnInit {
   constructor(private sessionService: SessionService) {}
 
   ngOnInit(): void {
-    const sessionId: number | undefined = history.state?.sessionId;
+    const state     = history.state ?? {};
+    const sid: number | undefined = state.sessionId;
+    const mood      = state.mood      ?? this.sessionService.getLocalSession()?.mood      ?? 'neutral';
+    const game      = state.game      ?? this.sessionService.getLocalSession()?.game      ?? '';
+    const intensity = state.intensity ?? this.sessionService.getLocalSession()?.intensity ?? 5;
 
-    if (sessionId) {
-      // TODO: llamar a SessionService.getRecommendations(sessionId) cuando el backend esté disponible
+    this.initDisplay(mood, game, intensity);
+
+    if (sid) {
+      this.sessionId = sid;
+      this.sessionService.getRecommendation(sid).subscribe({
+        next: (rec) => {
+          this.recommendationId = rec.id;
+          this.adviceList = [rec.texto];
+        },
+        error: () => { /* mantiene el mock ya cargado */ }
+      });
     }
-
-    const session = this.sessionService.getLocalSession();
-    this.loadFromMock(session);
   }
 
-  private loadFromMock(session: { mood: string; game?: string; intensity?: number } | null): void {
-    const mood = session?.mood ?? 'neutral';
+  retryRecommendation(): void {
+    if (!this.sessionId) return;
+    this.retrying = true;
+    this.sessionService.retryRecommendation(this.sessionId).subscribe({
+      next: (rec) => {
+        this.recommendationId = rec.id;
+        this.adviceList       = [rec.texto];
+        this.feedbackSent     = false;
+        this.feedbackUseful   = null;
+        this.retrying         = false;
+      },
+      error: () => { this.retrying = false; }
+    });
+  }
+
+  private initDisplay(mood: string, game: string, intensity: number): void {
     this.currentMood      = mood;
-    this.sessionGame      = session?.game ?? '';
-    this.sessionIntensity = session?.intensity ?? 5;
+    this.sessionGame      = game;
+    this.sessionIntensity = intensity;
     this.moodLabel        = MOOD_LABELS[mood]    ?? 'NORMAL';
     this.resultTag        = RESULT_TAGS[mood]     ?? RESULT_TAGS['neutral'];
     this.moodMessage      = MOOD_MESSAGES[mood]   ?? MOOD_MESSAGES['neutral'];
@@ -121,6 +148,7 @@ export class RecommendationsComponent implements OnInit {
     return n.toString().padStart(2, '0');
   }
 
+<<<<<<< HEAD
   toggleCard(index: number): void {
     if (this.flippedCards.has(index)) {
       this.flippedCards.delete(index);
@@ -135,9 +163,17 @@ export class RecommendationsComponent implements OnInit {
   }
 
   sendFeedback(useful: boolean, _comment: string): void {
+=======
+  sendFeedback(useful: boolean, comment: string): void {
+>>>>>>> feature/frontend-base-integration
     this.feedbackSent   = true;
     this.feedbackUseful = useful;
 
-    // TODO: llamar cuando el backend esté disponible
+    if (this.recommendationId !== null) {
+      this.sessionService.sendFeedback(this.recommendationId, {
+        util: useful,
+        comentario: comment || undefined
+      }).subscribe();
+    }
   }
 }

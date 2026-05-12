@@ -19,12 +19,6 @@ export class SessionService {
     localStorage.setItem(SESSION_KEY, JSON.stringify(data));
   }
 
-  getLocalMood(): string {
-    const raw = localStorage.getItem(SESSION_KEY);
-    if (!raw) return 'neutral';
-    return (JSON.parse(raw) as SessionRequest).mood ?? 'neutral';
-  }
-
   getLocalSession(): SessionRequest | null {
     const raw = localStorage.getItem(SESSION_KEY);
     if (!raw) return null;
@@ -45,13 +39,15 @@ export class SessionService {
     return this.http.get<SessionResponse[]>(`${API}/sessions`, { headers: this.headers() });
   }
 
-  getRecommendations(sessionId: number): Observable<Recommendation[]> {
-    // TODO: endpoint GET /api/sessions/{id}/recommendations (pendiente de backend)
-    return this.http.get<Recommendation[]>(`${API}/sessions/${sessionId}/recommendations`, { headers: this.headers() });
+  getRecommendation(sessionId: number): Observable<Recommendation> {
+    return this.http.post<Recommendation>(`${API}/recommendations/${sessionId}`, {}, { headers: this.headers() });
   }
 
-  sendFeedback(body: FeedbackRequest): Observable<void> {
-    // TODO: endpoint POST /api/feedback (pendiente de backend)
-    return this.http.post<void>(`${API}/feedback`, body, { headers: this.headers() });
+  sendFeedback(recommendationId: number, body: FeedbackRequest): Observable<void> {
+    return this.http.post<void>(`${API}/feedback/${recommendationId}`, body, { headers: this.headers() });
+  }
+
+  retryRecommendation(sessionId: number): Observable<Recommendation> {
+    return this.http.post<Recommendation>(`${API}/recommendations/${sessionId}/retry`, {}, { headers: this.headers() });
   }
 }
