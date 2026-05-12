@@ -599,6 +599,7 @@ a.feature-card:hover .card-link-hint {
     margin-bottom: 1rem;
 }
 
+
 .mood-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -606,56 +607,86 @@ a.feature-card:hover .card-link-hint {
 }
 
 .mood-btn {
-    padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid transparent;
+    padding: 1.5rem 1rem;
+    background: rgba(255, 255, 255, 0.06);
+    border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 0.75rem;
     cursor: pointer;
-    transition: all 0.3s;
     text-align: center;
+    color: white;
+    transition: transform 0.2s ease, border-color 0.2s ease,
+                box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .mood-btn:hover {
     background: rgba(255, 255, 255, 0.1);
-}
-
-.mood-btn.selected {
-    transform: scale(1.05);
-    border-color: rgba(255, 255, 255, 0.3);
-}
-
-.mood-btn.happy.selected {
-    background: #388e3c;
-}
-
-.mood-btn.neutral.selected {
-    background: #f57c00;
-}
-
-.mood-btn.sad.selected {
-    background: #d32f2f;
+    transform: translateY(-2px);
 }
 
 .mood-btn svg {
     width: 3rem;
     height: 3rem;
-    margin: 0 auto 0.5rem;
+    margin: 0 auto 0.6rem;
     display: block;
+    stroke-width: 1.5;
+    transition: filter 0.2s ease, color 0.2s ease;
 }
 
 .mood-btn p {
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+    transition: color 0.2s ease;
 }
 
-.range-container {
-    position: relative;
+/* Colores en reposo */
+.mood-btn.happy   svg { color: #81c784; }
+.mood-btn.neutral svg { color: #ffd54f; }
+.mood-btn.sad     svg { color: #f87171; }
+.mood-btn.happy   p   { color: #81c784; }
+.mood-btn.neutral p   { color: #ffd54f; }
+.mood-btn.sad     p   { color: #f87171; }
+
+/* Estado seleccionado — neon glow en lugar de color sólido */
+.mood-btn.selected {
+    transform: translateY(-3px) scale(1.04);
 }
 
-.range-value {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #ba68c8;
+.mood-btn.happy.selected {
+    border-color: #76ff9a;
+    background: rgba(118, 255, 154, 0.1);
+    box-shadow: 0 0 16px rgba(118, 255, 154, 0.45),
+                0 0 36px rgba(118, 255, 154, 0.15);
 }
+.mood-btn.happy.selected svg {
+    color: #76ff9a;
+    filter: drop-shadow(0 0 8px rgba(118, 255, 154, 0.95));
+}
+.mood-btn.happy.selected p { color: #76ff9a; }
+
+.mood-btn.neutral.selected {
+    border-color: #ffd740;
+    background: rgba(255, 215, 64, 0.1);
+    box-shadow: 0 0 16px rgba(255, 215, 64, 0.45),
+                0 0 36px rgba(255, 215, 64, 0.15);
+}
+.mood-btn.neutral.selected svg {
+    color: #ffd740;
+    filter: drop-shadow(0 0 8px rgba(255, 215, 64, 0.95));
+}
+.mood-btn.neutral.selected p { color: #ffd740; }
+
+.mood-btn.sad.selected {
+    border-color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+    box-shadow: 0 0 16px rgba(255, 107, 107, 0.45),
+                0 0 36px rgba(255, 107, 107, 0.15);
+}
+.mood-btn.sad.selected svg {
+    color: #ff6b6b;
+    filter: drop-shadow(0 0 8px rgba(255, 107, 107, 0.95));
+}
+.mood-btn.sad.selected p { color: #ff6b6b; }
 
 input[type="range"] {
     width: 100%;

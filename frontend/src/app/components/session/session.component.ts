@@ -16,6 +16,7 @@ export class SessionComponent {
   form: FormGroup;
   submitted = false;
   isLoading = false;
+  readonly intensitySegments = Array.from({ length: 10 }, (_, i) => i + 1);
 
   constructor(
     private fb:             FormBuilder,

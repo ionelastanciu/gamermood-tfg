@@ -1,27 +1,169 @@
+/* ── Section label (icon + text) ─────────────────────────────── */
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.9rem;
+}
+
+.section-label svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  color: #b84fff;
+  stroke-width: 2;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 4px rgba(184, 79, 255, 0.5));
+}
+
+.section-label span {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0.02em;
+}
+
+/* ── Intensity HUD ────────────────────────────────────────────── */
+.intensity-hud {
+  margin-top: 0.5rem;
+}
+
+.intensity-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.2rem;
+  margin-bottom: 0.85rem;
+}
+
+.intensity-digit {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.75rem;
+  font-weight: 900;
+  line-height: 1;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.intensity-digit.low {
+  color: #76ff9a;
+  text-shadow: 0 0 14px rgba(118, 255, 154, 0.65);
+}
+.intensity-digit.mid {
+  color: #ffd740;
+  text-shadow: 0 0 14px rgba(255, 215, 64, 0.65);
+}
+.intensity-digit.high {
+  color: #ff6b6b;
+  text-shadow: 0 0 14px rgba(255, 107, 107, 0.65);
+}
+
+.intensity-max {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 500;
+}
+
+/* ── Barras de intensidad ─── */
+.intensity-bars {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 1rem;
+}
+
+.ibar {
+  flex: 1;
+  height: 18px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  transition: background 0.1s ease, box-shadow 0.1s ease, transform 0.1s ease;
+  transform-origin: bottom;
+}
+
+.ibar.active {
+  transform: scaleY(1.12);
+}
+
+.ibar.active.ibar-low {
+  background: #76ff9a;
+  box-shadow: 0 0 7px rgba(118, 255, 154, 0.75);
+}
+
+.ibar.active.ibar-mid {
+  background: #ffd740;
+  box-shadow: 0 0 7px rgba(255, 215, 64, 0.75);
+}
+
+.ibar.active.ibar-high {
+  background: #ff6b6b;
+  box-shadow: 0 0 7px rgba(255, 107, 107, 0.75);
+}
+
+/* ── Slider gaming ─── */
+.intensity-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  border: none;
+}
+
+.intensity-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #b84fff;
+  box-shadow: 0 0 10px rgba(184, 79, 255, 0.9),
+              0 0 22px rgba(184, 79, 255, 0.4);
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  transition: box-shadow 0.2s ease;
+}
+
+.intensity-slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 14px rgba(184, 79, 255, 1),
+              0 0 30px rgba(184, 79, 255, 0.55);
+}
+
+.intensity-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #b84fff;
+  box-shadow: 0 0 10px rgba(184, 79, 255, 0.9);
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+}
+
+/* ── Inputs de texto y textarea ───────────────────────────────── */
 .form-section input[type="text"],
 .form-section textarea {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(10, 5, 25, 0.55);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 0.5rem;
   color: white;
   font-size: 1rem;
   font-family: inherit;
-  transition: border-color 0.3s;
+  transition: border-color 0.25s, box-shadow 0.25s;
 }
 
 .form-section input[type="text"]:focus,
 .form-section textarea:focus {
   outline: none;
-  border-color: #7b1fa2;
+  border-color: #b84fff;
+  box-shadow: 0 0 0 2px rgba(184, 79, 255, 0.2), 0 0 14px rgba(184, 79, 255, 0.15);
 }
 
 .form-section input::placeholder,
 .form-section textarea::placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.35);
 }
 
+/* ── Validación ───────────────────────────────────────────────── */
 .input-error {
   border-color: #f87171 !important;
   background: rgba(248, 113, 113, 0.06) !important;
@@ -34,8 +176,10 @@
   margin-top: 0.4rem;
 }
 
+/* ── Botón submit ─────────────────────────────────────────────── */
 .btn-submit:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none !important;
+  box-shadow: none !important;
 }
