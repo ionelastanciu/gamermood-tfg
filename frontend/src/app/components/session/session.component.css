@@ -241,6 +241,60 @@
   box-shadow: none !important;
 }
 
+/* ── Form actions row ─────────────────────────────────────────── */
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: stretch;
+  margin-top: 1.5rem;
+}
+
+.form-actions .btn-submit {
+  flex: 1;
+  margin-top: 0;
+}
+
+.btn-reset {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.1rem;
+  background: rgba(248, 113, 113, 0.07);
+  border: 1px solid rgba(248, 113, 113, 0.28);
+  border-radius: 0.5rem;
+  color: #f87171;
+  font-size: 0.72rem;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.btn-reset svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  stroke-width: 2.2;
+  flex-shrink: 0;
+}
+
+.btn-reset:hover {
+  background: rgba(248, 113, 113, 0.14);
+  border-color: #f87171;
+  box-shadow: 0 0 10px rgba(248, 113, 113, 0.22);
+}
+
+.form-save-note {
+  text-align: center;
+  font-size: 0.7rem;
+  color: rgba(184, 79, 255, 0.45);
+  margin-top: 0.65rem;
+  line-height: 1.4;
+}
+
 /* ── Responsive ───────────────────────────────────────────────── */
 @media (max-width: 480px) {
   .section-label span  { font-size: 0.9rem; }

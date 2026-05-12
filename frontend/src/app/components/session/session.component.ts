@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
@@ -13,9 +13,11 @@ import { SessionRequest } from '../../models/session.model';
   styleUrls: ['./session.component.css']
 })
 export class SessionComponent {
+  @ViewChild('gameSelect') gameSelectRef!: ElementRef<HTMLSelectElement>;
+
   form: FormGroup;
-  submitted  = false;
-  isLoading  = false;
+  submitted     = false;
+  isLoading     = false;
   showOtherGame = false;
   readonly intensitySegments = Array.from({ length: 10 }, (_, i) => i + 1);
 
@@ -50,6 +52,15 @@ export class SessionComponent {
 
   onOtherGameInput(value: string): void {
     this.form.patchValue({ game: value });
+  }
+
+  resetForm(): void {
+    this.submitted    = false;
+    this.showOtherGame = false;
+    this.form.reset({ intensity: 5 });
+    if (this.gameSelectRef?.nativeElement) {
+      this.gameSelectRef.nativeElement.value = '';
+    }
   }
 
   onSubmit(): void {

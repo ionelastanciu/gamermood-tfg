@@ -220,16 +220,26 @@
                     }
                 </div>
 
-                <button type="submit" class="btn-submit" [disabled]="isLoading || (submitted && form.invalid)">
-                    @if (isLoading) {
-                        Guardando sesión...
-                    } @else {
-                        <svg class="icon-bolt-lg" viewBox="0 0 24 24" fill="currentColor">
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                <div class="form-actions">
+                    <button type="button" class="btn-reset" (click)="resetForm()" title="Limpiar todos los campos">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                            <path d="M3 3v5h5"/>
                         </svg>
-                        Obtener Consejos
-                    }
-                </button>
+                        Limpiar
+                    </button>
+                    <button type="submit" class="btn-submit" [disabled]="isLoading || (submitted && form.invalid)">
+                        @if (isLoading) {
+                            Guardando sesión...
+                        } @else {
+                            <svg class="icon-bolt-lg" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                            </svg>
+                            Guardar Sesión
+                        }
+                    </button>
+                </div>
+                <p class="form-save-note">Tu sesión se guardará en el historial y recibirás recomendaciones personalizadas</p>
 
             </form>
         </div>
