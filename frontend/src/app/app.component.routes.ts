@@ -6,15 +6,21 @@ import { RecommendationsComponent } from './components/recommendations/recommend
 import { RegisterComponent } from './components/register/register.component';
 import { RegisterSuccessComponent } from './components/register-success/register-success.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { ExpresaEmocionesComponent } from './components/expresa-emociones/expresa-emociones.component';
+import { ConsejosPersonalizadosComponent } from './components/consejos-personalizados/consejos-personalizados.component';
+import { EncuentraTuJuegoComponent } from './components/encuentra-tu-juego/encuentra-tu-juego.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '',                 component: IndexComponent },
-  { path: 'login',            component: LoginComponent },
-  { path: 'register',         component: RegisterComponent },
-  { path: 'register-success', component: RegisterSuccessComponent },
-  { path: 'dashboard',        component: DashboardComponent,       canActivate: [authGuard] },
-  { path: 'session',          component: SessionComponent,         canActivate: [authGuard] },
-  { path: 'recommendations',  component: RecommendationsComponent, canActivate: [authGuard] },
-  { path: '**',               redirectTo: '' }
+  { path: '',                        component: IndexComponent },
+  { path: 'login',                   component: LoginComponent },
+  { path: 'register',                component: RegisterComponent },
+  { path: 'register-success',        component: RegisterSuccessComponent },
+  { path: 'expresa-emociones',       component: ExpresaEmocionesComponent },
+  { path: 'consejos-personalizados', component: ConsejosPersonalizadosComponent },
+  { path: 'encuentra-tu-juego',      component: EncuentraTuJuegoComponent },
+  { path: 'dashboard',               component: DashboardComponent,       canActivate: [authGuard] },
+  { path: 'session',                 component: SessionComponent,         canActivate: [authGuard] },
+  { path: 'recommendations',         component: RecommendationsComponent, canActivate: [authGuard] },
+  { path: '**',                      redirectTo: '' }
 ];
