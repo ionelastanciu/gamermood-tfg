@@ -8,6 +8,18 @@ interface GameItem {
   description: string;
 }
 
+const MOOD_LABELS: Record<string, string> = {
+  happy:   'GENIAL',
+  neutral: 'NORMAL',
+  sad:     'FRUSTRADO'
+};
+
+const RESULT_TAGS: Record<string, string> = {
+  happy:   '// VICTORIA //',
+  neutral: '// SESIÓN COMPLETA //',
+  sad:     '// ANÁLISIS COMPLETO //'
+};
+
 const MOOD_MESSAGES: Record<string, string> = {
   happy:   '¡Excelente sesión! Aquí hay formas de mantener ese momentum',
   neutral: 'Una sesión tranquila. Te ayudamos a encontrar lo que necesitas',
@@ -38,22 +50,22 @@ const MOCK_ADVICE: Record<string, string[]> = {
 
 const MOCK_GAMES: Record<string, GameItem[]> = {
   happy: [
-    { title: 'Celeste',      genre: 'Plataformas/Desafío',   description: 'Perfecto para mantener el momentum con desafíos gratificantes' },
-    { title: 'Hades',        genre: 'Roguelike/Acción',       description: 'Combate fluido y progresión constante para seguir disfrutando' },
-    { title: 'Rocket League', genre: 'Deportes/Competitivo',  description: 'Canaliza esa energía positiva en partidas emocionantes' },
-    { title: 'It Takes Two', genre: 'Cooperativo/Aventura',   description: 'Comparte la diversión con un amigo en esta aventura única' }
+    { title: 'Celeste',       genre: 'Plataformas / Desafío',  description: 'Perfecto para mantener el momentum con desafíos gratificantes' },
+    { title: 'Hades',         genre: 'Roguelike / Acción',     description: 'Combate fluido y progresión constante para seguir disfrutando' },
+    { title: 'Rocket League', genre: 'Deportes / Competitivo', description: 'Canaliza esa energía positiva en partidas emocionantes' },
+    { title: 'It Takes Two',  genre: 'Cooperativo / Aventura', description: 'Comparte la diversión con un amigo en esta aventura única' }
   ],
   neutral: [
-    { title: 'Stardew Valley', genre: 'Simulación/Relajante', description: 'Experiencia tranquila perfecta para desconectar' },
-    { title: 'Hollow Knight',  genre: 'Metroidvania',          description: 'Exploración envolvente a tu propio ritmo' },
-    { title: 'Slay the Spire', genre: 'Roguelike/Cartas',      description: 'Estrategia por turnos sin presión de tiempo' },
-    { title: 'A Short Hike',   genre: 'Exploración/Casual',    description: 'Aventura corta y encantadora para refrescar' }
+    { title: 'Stardew Valley', genre: 'Simulación / Relajante', description: 'Experiencia tranquila perfecta para desconectar' },
+    { title: 'Hollow Knight',  genre: 'Metroidvania',            description: 'Exploración envolvente a tu propio ritmo' },
+    { title: 'Slay the Spire', genre: 'Roguelike / Cartas',     description: 'Estrategia por turnos sin presión de tiempo' },
+    { title: 'A Short Hike',   genre: 'Exploración / Casual',   description: 'Aventura corta y encantadora para refrescar' }
   ],
   sad: [
-    { title: 'Journey',        genre: 'Aventura/Artístico',    description: 'Experiencia relajante y emocionalmente reconfortante' },
+    { title: 'Journey',         genre: 'Aventura / Artístico', description: 'Experiencia relajante y emocionalmente reconfortante' },
     { title: 'Animal Crossing', genre: 'Simulación Social',    description: 'Ritmo pausado y sin presión, pura relajación' },
-    { title: 'Spiritfarer',    genre: 'Gestión/Narrativo',     description: 'Historia reconfortante con mecánicas relajantes' },
-    { title: 'Unpacking',      genre: 'Puzzle/Zen',            description: 'Meditativo y satisfactorio, perfecto para desestresarse' }
+    { title: 'Spiritfarer',     genre: 'Gestión / Narrativo',  description: 'Historia reconfortante con mecánicas relajantes' },
+    { title: 'Unpacking',       genre: 'Puzzle / Zen',         description: 'Meditativo y satisfactorio, perfecto para desestresarse' }
   ]
 };
 
@@ -65,12 +77,19 @@ const MOCK_GAMES: Record<string, GameItem[]> = {
   styleUrls: ['./recommendations.component.css']
 })
 export class RecommendationsComponent implements OnInit {
-  moodMessage = 'Basado en tu sesión, aquí están nuestros consejos';
+  moodMessage    = '';
+  moodLabel      = 'NORMAL';
+  resultTag      = '// SESIÓN COMPLETA //';
+  currentMood    = 'neutral';
+  sessionGame    = '';
+  sessionIntensity = 5;
   adviceList: string[]   = [];
   gamesList:  GameItem[] = [];
 
   feedbackSent    = false;
   feedbackUseful: boolean | null = null;
+
+  readonly intensitySegments = Array.from({ length: 10 }, (_, i) => i + 1);
 
   constructor(private sessionService: SessionService) {}
 
@@ -79,18 +98,26 @@ export class RecommendationsComponent implements OnInit {
 
     if (sessionId) {
       // TODO: llamar a SessionService.getRecommendations(sessionId) cuando el backend esté disponible
-      // this.sessionService.getRecommendations(sessionId).subscribe(recs => this.mapRecommendations(recs));
     }
 
-    // Fallback: datos locales guardados por el formulario de sesión
-    const mood = this.sessionService.getLocalMood();
-    this.loadFromMock(mood);
+    const session = this.sessionService.getLocalSession();
+    this.loadFromMock(session);
   }
 
-  private loadFromMock(mood: string): void {
-    this.moodMessage = MOOD_MESSAGES[mood] ?? MOOD_MESSAGES['neutral'];
-    this.adviceList  = MOCK_ADVICE[mood]   ?? MOCK_ADVICE['neutral'];
-    this.gamesList   = MOCK_GAMES[mood]    ?? MOCK_GAMES['neutral'];
+  private loadFromMock(session: { mood: string; game?: string; intensity?: number } | null): void {
+    const mood = session?.mood ?? 'neutral';
+    this.currentMood      = mood;
+    this.sessionGame      = session?.game ?? '';
+    this.sessionIntensity = session?.intensity ?? 5;
+    this.moodLabel        = MOOD_LABELS[mood]    ?? 'NORMAL';
+    this.resultTag        = RESULT_TAGS[mood]     ?? RESULT_TAGS['neutral'];
+    this.moodMessage      = MOOD_MESSAGES[mood]   ?? MOOD_MESSAGES['neutral'];
+    this.adviceList       = MOCK_ADVICE[mood]     ?? MOCK_ADVICE['neutral'];
+    this.gamesList        = MOCK_GAMES[mood]      ?? MOCK_GAMES['neutral'];
+  }
+
+  padNum(n: number): string {
+    return n.toString().padStart(2, '0');
   }
 
   sendFeedback(useful: boolean, _comment: string): void {
@@ -98,9 +125,5 @@ export class RecommendationsComponent implements OnInit {
     this.feedbackUseful = useful;
 
     // TODO: llamar cuando el backend esté disponible
-    // const sessionId = history.state?.sessionId;
-    // if (sessionId) {
-    //   this.sessionService.sendFeedback({ recommendationId: sessionId, useful, comment: _comment || undefined });
-    // }
   }
 }

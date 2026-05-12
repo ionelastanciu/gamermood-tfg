@@ -42,6 +42,8 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
 }
 
 .dashboard-subtitle {
@@ -171,6 +173,8 @@
 }
 
 .card-intensity {
+  display: flex;
+  align-items: center;
   font-size: 0.85rem;
   color: #d1d5db;
   margin-bottom: 0.5rem;

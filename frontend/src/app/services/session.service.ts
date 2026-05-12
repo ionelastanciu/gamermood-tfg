@@ -25,6 +25,12 @@ export class SessionService {
     return (JSON.parse(raw) as SessionRequest).mood ?? 'neutral';
   }
 
+  getLocalSession(): SessionRequest | null {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    try { return JSON.parse(raw) as SessionRequest; } catch { return null; }
+  }
+
   private headers(): HttpHeaders {
     return new HttpHeaders({ Authorization: `Bearer ${this.auth.getToken()}` });
   }

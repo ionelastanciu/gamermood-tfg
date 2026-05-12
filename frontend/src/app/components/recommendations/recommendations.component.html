@@ -1,5 +1,5 @@
 <div class="recommendations-container">
-    <a routerLink="/dashboard" class="back-home">
+    <a routerLink="/dashboard" class="back-home anim-slide-left">
         <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
             <polyline points="9 22 9 12 15 12 15 22"></polyline>
@@ -7,56 +7,122 @@
         Mis sesiones
     </a>
 
-    <div class="recommendations-content">
-        <div class="recommendations-header">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20z"></path>
-                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                <circle cx="12" cy="17" r="0.5"></circle>
-            </svg>
-            <h2>Tus Recomendaciones Personalizadas</h2>
-            <p>{{moodMessage}}</p>
-        </div>
+    <div class="rec-content">
 
-        <div class="recommendations-box">
-            <div class="advice-section">
-                <h3>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        <!-- ── Result header ────────────────────────────────── -->
+        <header class="result-header anim-fade-up">
+            <span [class]="'result-tag result-tag-' + currentMood">{{resultTag}}</span>
+            <div class="result-icon-wrap">
+                <svg class="icon-trophy-xl" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M6 9H2V4h4M18 9h4V4h-4M3 4h18v5a9 9 0 0 1-18 0V4zM12 14v4M8 22h8"/>
+                </svg>
+            </div>
+            <h2>Recomendaciones Personalizadas</h2>
+            <p class="result-sub">{{moodMessage}}</p>
+        </header>
+
+        <!-- ── Session snapshot ─────────────────────────────── -->
+        <div class="session-snap anim-fade-up anim-d1">
+
+            <div [class]="'snap-item snap-mood-' + currentMood">
+                @if (currentMood === 'happy') {
+                    <svg class="snap-face" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                        <line x1="15" y1="9" x2="15.01" y2="9"></line>
                     </svg>
-                    Consejos para ti
-                </h3>
-                <ul class="advice-list">
-                    @for (advice of adviceList; track advice) {
-                        <li>{{advice}}</li>
-                    }
-                </ul>
+                }
+                @if (currentMood === 'neutral') {
+                    <svg class="snap-face" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="8" y1="15" x2="16" y2="15"></line>
+                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                        <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                    </svg>
+                }
+                @if (currentMood === 'sad') {
+                    <svg class="snap-face" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
+                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                        <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                    </svg>
+                }
+                <span class="snap-mood-label">{{moodLabel}}</span>
             </div>
 
-            <div class="advice-section">
-                <h3>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M6 12h12M12 6v12"></path>
-                        <rect x="2" y="7" width="20" height="10" rx="2"></rect>
-                    </svg>
-                    Juegos recomendados para tu estado
-                </h3>
-                <div class="games-grid">
-                    @for (game of gamesList; track game.title) {
-                        <div class="game-card">
-                            <h4>{{game.title}}</h4>
-                            <div class="game-genre">{{game.genre}}</div>
-                            <p>{{game.description}}</p>
-                        </div>
+            <div class="snap-sep"></div>
+
+            <div class="snap-item">
+                <svg class="snap-bolt" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+                <span class="snap-intensity-val">{{sessionIntensity}}/10</span>
+                <div class="snap-ibars">
+                    @for (seg of intensitySegments; track seg) {
+                        <div class="snap-ibar" [class.active]="sessionIntensity >= seg"></div>
                     }
                 </div>
             </div>
+
+            @if (sessionGame) {
+                <div class="snap-sep"></div>
+                <div class="snap-item">
+                    <svg class="snap-controller" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M6 12h12M12 6v12"></path>
+                        <rect x="2" y="7" width="20" height="10" rx="2"></rect>
+                    </svg>
+                    <span class="snap-game-name">{{sessionGame}}</span>
+                </div>
+            }
         </div>
 
-        <!-- Feedback -->
+        <!-- ── Advice section ───────────────────────────────── -->
+        <section class="rec-section anim-scale-in anim-d2">
+            <h3 class="rec-section-title">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+                Consejos para ti
+            </h3>
+            <div class="advice-items">
+                @for (advice of adviceList; track advice; let i = $index) {
+                    <div class="advice-item" [style.animation-delay]="(300 + i * 70) + 'ms'">
+                        <span class="advice-num">{{padNum(i + 1)}}</span>
+                        <p>{{advice}}</p>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <!-- ── Games section ────────────────────────────────── -->
+        <section class="rec-section anim-scale-in anim-d3">
+            <h3 class="rec-section-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M6 12h12M12 6v12"></path>
+                    <rect x="2" y="7" width="20" height="10" rx="2"></rect>
+                </svg>
+                Juegos recomendados para tu estado
+            </h3>
+            <div class="games-grid">
+                @for (game of gamesList; track game.title; let i = $index) {
+                    <div [class]="'game-card game-card-mood-' + currentMood + ' anim-scale-in'"
+                         [style.animation-delay]="(400 + i * 80) + 'ms'">
+                        <div class="game-card-header">
+                            <h4>{{game.title}}</h4>
+                            <span class="badge-play">PLAY</span>
+                        </div>
+                        <div class="game-genre">{{game.genre}}</div>
+                        <p>{{game.description}}</p>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <!-- ── Feedback ─────────────────────────────────────── -->
         @if (!feedbackSent) {
-            <div class="feedback-section">
+            <div class="feedback-section anim-fade-up anim-d5">
                 <p class="feedback-title">¿Te han servido estas recomendaciones?</p>
                 <div class="feedback-buttons">
                     <button class="btn-feedback btn-feedback-yes" (click)="sendFeedback(true, commentRef.value)">
@@ -73,35 +139,29 @@
                         No me ha servido
                     </button>
                 </div>
-                <textarea
-                    #commentRef
-                    class="feedback-comment"
-                    placeholder="Comentario opcional..."></textarea>
+                <textarea #commentRef class="feedback-comment" placeholder="Comentario opcional..."></textarea>
             </div>
         } @else {
-            <div class="feedback-sent">
+            <div class="feedback-sent anim-fade-up">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
                 @if (feedbackUseful) {
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
                     <p>¡Gracias! Nos alegra que te haya sido útil.</p>
                 } @else {
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
                     <p>Gracias por tu feedback. Lo tendremos en cuenta para mejorar.</p>
                 }
             </div>
         }
 
-        <button class="btn-new-session" routerLink="/session">
+        <button class="btn-new-session anim-fade-up anim-d6" routerLink="/session">
             <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <polyline points="1 4 1 10 7 10"></polyline>
-                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                <path d="M6 12h12M12 6v12"/>
+                <rect x="2" y="7" width="20" height="10" rx="2"/>
             </svg>
             Nueva Sesión
         </button>
+
     </div>
 </div>

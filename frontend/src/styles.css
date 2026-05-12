@@ -871,6 +871,167 @@ textarea::placeholder {
     box-shadow: 0 0 18px rgba(194, 24, 91, 0.5), 0 0 30px rgba(123, 31, 162, 0.25);
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   MICROANIMATIONS
+   Only opacity + transform — no layout reflow, GPU-accelerated.
+   animation-fill-mode: both → element starts invisible during delay.
+   ═══════════════════════════════════════════════════════════════ */
+
+@keyframes fade-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes scale-in {
+    from { opacity: 0; transform: scale(0.94) translateY(10px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0);    }
+}
+
+@keyframes slide-left {
+    from { opacity: 0; transform: translateX(-16px); }
+    to   { opacity: 1; transform: translateX(0);     }
+}
+
+.anim-fade-up    { animation: fade-up   0.40s ease both; }
+.anim-scale-in   { animation: scale-in  0.38s ease both; }
+.anim-slide-left { animation: slide-left 0.30s ease both; }
+
+/* Stagger delays */
+.anim-d1 { animation-delay:  80ms; }
+.anim-d2 { animation-delay: 160ms; }
+.anim-d3 { animation-delay: 240ms; }
+.anim-d4 { animation-delay: 320ms; }
+.anim-d5 { animation-delay: 400ms; }
+.anim-d6 { animation-delay: 500ms; }
+
+@media (prefers-reduced-motion: reduce) {
+    .anim-fade-up,
+    .anim-scale-in,
+    .anim-slide-left {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GAMING VISUAL ELEMENTS
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── "// PRESS START //" tag (home hero) ───────────────────── */
+.press-start {
+    display: block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.32em;
+    color: #76ff9a;
+    text-shadow: 0 0 8px rgba(118, 255, 154, 0.8),
+                 0 0 16px rgba(118, 255, 154, 0.4);
+    margin-bottom: 1.25rem;
+    animation: press-blink 2.4s ease-in-out infinite;
+}
+
+@keyframes press-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.25; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .press-start { animation: none; }
+}
+
+/* ── Lightning bolt icon (filled SVG) ──────────────────────── */
+.icon-bolt {
+    width: 0.85rem;
+    height: 0.85rem;
+    color: #ffd740;
+    vertical-align: middle;
+    margin-right: 0.25rem;
+    filter: drop-shadow(0 0 4px rgba(255, 215, 64, 0.8));
+    flex-shrink: 0;
+}
+
+.icon-bolt-lg {
+    width: 1.1rem;
+    height: 1.1rem;
+    color: currentColor;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 5px rgba(255, 215, 64, 0.7));
+}
+
+/* ── Trophy icon (dashboard title) ─────────────────────────── */
+.icon-trophy {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: #ffd740;
+    stroke-width: 2;
+    vertical-align: middle;
+    margin-right: 0.4rem;
+    filter: drop-shadow(0 0 6px rgba(255, 215, 64, 0.65));
+    flex-shrink: 0;
+}
+
+/* ── Lightning in advice section (recommendations) ─────────── */
+.icon-advice {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #ffd740;
+    vertical-align: middle;
+    margin-right: 0.4rem;
+    filter: drop-shadow(0 0 5px rgba(255, 215, 64, 0.8));
+}
+
+/* ── PLAY badge on game cards ───────────────────────────────── */
+.game-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+}
+
+.game-card-header h4 {
+    font-size: 1.15rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.badge-play {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    color: #76ff9a;
+    border: 1px solid rgba(118, 255, 154, 0.45);
+    border-radius: 3px;
+    padding: 0.15rem 0.45rem;
+    box-shadow: 0 0 6px rgba(118, 255, 154, 0.2);
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+
+/* ── Empty state controller SVG ────────────────────────────── */
+.empty-controller {
+    width: 120px;
+    height: auto;
+    margin: 0 auto 1.25rem;
+    color: rgba(184, 79, 255, 0.5);
+    filter: drop-shadow(0 0 10px rgba(184, 79, 255, 0.4));
+}
+
+.empty-controller svg {
+    width: 100%;
+    height: auto;
+}
+
+.empty-hint {
+    font-size: 0.82rem;
+    color: #6b7280;
+    margin-bottom: 1.5rem !important;
+    margin-top: -0.75rem;
+}
+
 @media (max-width: 768px) {
     .hero-title {
         font-size: 2.5rem;

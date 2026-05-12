@@ -20,28 +20,33 @@
 
   <main class="dashboard-content">
 
-    <div class="dashboard-header">
+    <div class="dashboard-header anim-fade-up">
       <div>
-        <h2 class="dashboard-title">Mis Sesiones</h2>
+        <h2 class="dashboard-title">
+          <svg class="icon-trophy" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M6 9H2V4h4M18 9h4V4h-4M3 4h18v5a9 9 0 0 1-18 0V4zM12 14v4M8 22h8"/>
+          </svg>
+          Mis Sesiones
+        </h2>
         <p class="dashboard-subtitle">Tu historial emocional gaming</p>
       </div>
       <a routerLink="/session" class="btn-new-session-link">
         <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <path d="M6 12h12M12 6v12"/>
+          <rect x="2" y="7" width="20" height="10" rx="2"/>
         </svg>
         Nueva sesión
       </a>
     </div>
 
-    <div class="mock-notice">
+    <div class="mock-notice anim-fade-up anim-d1">
       Datos de ejemplo — se conectará al historial real cuando el backend esté disponible.
     </div>
 
     @if (sessions.length > 0) {
       <div class="sessions-grid">
-        @for (session of sessions; track session.id) {
-          <div class="session-card" [class]="'mood-border-' + session.mood">
+        @for (session of sessions; track session.id; let i = $index) {
+          <div class="session-card anim-scale-in" [class]="'mood-border-' + session.mood" [style.animation-delay]="(i * 80) + 'ms'">
             <div class="card-top">
               <span class="game-name">{{ session.game }}</span>
               <span class="mood-badge" [class]="'mood-' + session.mood">
@@ -49,7 +54,10 @@
               </span>
             </div>
             <div class="card-intensity">
-              Intensidad emocional: <strong>{{ session.intensity }}/10</strong>
+              <svg class="icon-bolt" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+              {{ session.intensity }}/10
             </div>
             <p class="card-experience">{{ session.experience }}</p>
             <div class="card-date">{{ formatDate(session.createdAt) }}</div>
@@ -57,13 +65,35 @@
         }
       </div>
     } @else {
-      <div class="empty-state">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <path d="M6 12h12M12 6v12"></path>
-          <rect x="2" y="7" width="20" height="10" rx="2"></rect>
-        </svg>
+      <div class="empty-state anim-scale-in anim-d2">
+        <div class="empty-controller">
+          <svg viewBox="0 0 80 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- cuerpo del mando -->
+            <rect x="4" y="12" width="72" height="28" rx="14" stroke="currentColor" stroke-width="2.5"/>
+            <!-- cruceta izquierda -->
+            <line x1="20" y1="22" x2="20" y2="34" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="14" y1="28" x2="26" y2="28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- botones derecha -->
+            <circle cx="58" cy="24" r="3" stroke="currentColor" stroke-width="2"/>
+            <circle cx="66" cy="28" r="3" stroke="currentColor" stroke-width="2"/>
+            <circle cx="58" cy="32" r="3" stroke="currentColor" stroke-width="2"/>
+            <circle cx="50" cy="28" r="3" stroke="currentColor" stroke-width="2"/>
+            <!-- select / start -->
+            <rect x="33" y="26" width="6" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+            <rect x="41" y="26" width="6" height="2" rx="1" fill="currentColor" opacity="0.5"/>
+            <!-- gatillos -->
+            <path d="M16 12 Q18 4 26 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M64 12 Q62 4 54 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
         <p>Todavía no tienes sesiones registradas.</p>
-        <a routerLink="/session" class="btn-cta">Crear tu primera sesión</a>
+        <p class="empty-hint">Registra tu primera partida y empieza a conocerte</p>
+        <a routerLink="/session" class="btn-cta">
+          <svg class="icon-bolt-lg" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+          Crear tu primera sesión
+        </a>
       </div>
     }
 
