@@ -282,19 +282,53 @@ a.feature-card:hover .card-link-hint {
 }
 
 .back-home {
-    position: absolute;
-    top: 1.5rem;
-    left: 1.5rem;
+    position: fixed;
+    top: 1.25rem;
+    left: 1.25rem;
+    z-index: 200;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    color: #d1d5db;
+    gap: 0.45rem;
+    padding: 0.5rem 1rem 0.5rem 0.7rem;
+    background: rgba(12, 6, 30, 0.72);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(184, 79, 255, 0.22);
+    border-radius: 2rem;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
     text-decoration: none;
-    transition: color 0.3s;
+    transition: color 0.22s, border-color 0.22s, box-shadow 0.22s, background 0.22s;
+}
+
+.back-home svg {
+    width: 0.95rem;
+    height: 0.95rem;
+    stroke-width: 2.3;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
 }
 
 .back-home:hover {
-    color: white;
+    color: #fff;
+    border-color: rgba(184, 79, 255, 0.55);
+    background: rgba(184, 79, 255, 0.1);
+    box-shadow: 0 0 18px rgba(184, 79, 255, 0.22), 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+.back-home:hover svg {
+    transform: translateX(-3px);
+}
+
+@media (max-width: 480px) {
+    .back-home {
+        top: 0.75rem;
+        left: 0.75rem;
+        padding: 0.45rem 0.75rem 0.45rem 0.6rem;
+        font-size: 0.72rem;
+    }
 }
 
 .login-box {
