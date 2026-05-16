@@ -30,12 +30,10 @@ export class SessionService {
   }
 
   createSession(body: SessionRequest): Observable<SessionResponse> {
-    // TODO: endpoint POST /api/sessions (pendiente de backend)
     return this.http.post<SessionResponse>(`${API}/sessions`, body, { headers: this.headers() });
   }
 
   getSessions(): Observable<SessionResponse[]> {
-    // TODO: endpoint GET /api/sessions (pendiente de backend)
     return this.http.get<SessionResponse[]>(`${API}/sessions`, { headers: this.headers() });
   }
 

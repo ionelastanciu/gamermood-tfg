@@ -55,11 +55,7 @@ export class SessionComponent {
   }
 
   resetForm(): void {
-<<<<<<< HEAD
-    this.submitted    = false;
-=======
     this.submitted     = false;
->>>>>>> feature/frontend-base-integration
     this.showOtherGame = false;
     this.form.reset({ intensity: 5 });
     if (this.gameSelectRef?.nativeElement) {

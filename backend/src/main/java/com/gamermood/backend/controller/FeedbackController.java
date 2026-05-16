@@ -20,7 +20,6 @@ public class FeedbackController {
         this.feedbackService = feedbackService;
     }
 
-    // POST /api/feedback/{recomendacionId}
     @PostMapping("/{recomendacionId}")
     public ResponseEntity<FeedbackResponseDto> enviar(
             @PathVariable Long recomendacionId,

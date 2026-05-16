@@ -148,7 +148,6 @@ export class RecommendationsComponent implements OnInit {
     return n.toString().padStart(2, '0');
   }
 
-<<<<<<< HEAD
   toggleCard(index: number): void {
     if (this.flippedCards.has(index)) {
       this.flippedCards.delete(index);
@@ -162,10 +161,7 @@ export class RecommendationsComponent implements OnInit {
     return this.flippedCards.has(i) ? base + ' card-open' : base;
   }
 
-  sendFeedback(useful: boolean, _comment: string): void {
-=======
   sendFeedback(useful: boolean, comment: string): void {
->>>>>>> feature/frontend-base-integration
     this.feedbackSent   = true;
     this.feedbackUseful = useful;
 

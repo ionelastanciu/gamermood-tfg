@@ -237,11 +237,7 @@
 }
 
 @keyframes empty-float {
-<<<<<<< HEAD
-  0%, 100% { transform: translateY(0);    }
-=======
-  0%, 100% { transform: translateY(0);     }
->>>>>>> feature/frontend-base-integration
+  0%, 100% { transform: translateY(0); }
   50%       { transform: translateY(-10px); }
 }
 
@@ -282,21 +278,6 @@
   border: 1px solid rgba(184, 79, 255, 0.22);
   border-radius: 9999px;
   color: #c4b5fd;
-<<<<<<< HEAD
-}
-
-.empty-perk svg {
-  width: 0.8rem;
-  height: 0.8rem;
-  flex-shrink: 0;
-  stroke-width: 2;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .empty-controller { animation: none; }
-  .empty-tag        { animation: none; opacity: 0.55; }
-=======
->>>>>>> feature/frontend-base-integration
 }
 
 .empty-perk svg {
