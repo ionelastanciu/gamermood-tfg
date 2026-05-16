@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { SessionService } from '../../services/session.service';
 
@@ -95,7 +95,7 @@ export class RecommendationsComponent implements OnInit {
   readonly intensitySegments = Array.from({ length: 10 }, (_, i) => i + 1);
   readonly flippedCards = new Set<number>();
 
-  constructor(private sessionService: SessionService) {}
+  constructor(private sessionService: SessionService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     const state     = history.state ?? {};
@@ -111,7 +111,8 @@ export class RecommendationsComponent implements OnInit {
       this.sessionService.getRecommendation(sid).subscribe({
         next: (rec) => {
           this.recommendationId = rec.id;
-          this.adviceList = [rec.texto];
+          this.adviceList = this.parseRecommendations(rec.texto);
+          this.cdr.detectChanges();
         },
         error: () => { /* mantiene el mock ya cargado */ }
       });
@@ -124,12 +125,13 @@ export class RecommendationsComponent implements OnInit {
     this.sessionService.retryRecommendation(this.sessionId).subscribe({
       next: (rec) => {
         this.recommendationId = rec.id;
-        this.adviceList       = [rec.texto];
+        this.adviceList       = this.parseRecommendations(rec.texto);
         this.feedbackSent     = false;
         this.feedbackUseful   = null;
         this.retrying         = false;
+        this.cdr.detectChanges();
       },
-      error: () => { this.retrying = false; }
+      error: () => { this.retrying = false; this.cdr.detectChanges(); }
     });
   }
 
@@ -144,11 +146,29 @@ export class RecommendationsComponent implements OnInit {
     this.gamesList        = MOCK_GAMES[mood]      ?? MOCK_GAMES['neutral'];
   }
 
+  private parseRecommendations(texto: string): string[] {
+    const lines = texto.split('\n');
+    const items: string[] = [];
+    let current = '';
+
+    for (const line of lines) {
+      const match = line.match(/^\s*\d+\.\s+(.+)/);
+      if (match) {
+        if (current.trim()) items.push(current.trim());
+        current = match[1];
+      } else if (line.trim() && current) {
+        current += ' ' + line.trim();
+      }
+    }
+    if (current.trim()) items.push(current.trim());
+
+    return items.length >= 2 ? items : [texto.trim()];
+  }
+
   padNum(n: number): string {
     return n.toString().padStart(2, '0');
   }
 
-<<<<<<< HEAD
   toggleCard(index: number): void {
     if (this.flippedCards.has(index)) {
       this.flippedCards.delete(index);
@@ -162,10 +182,7 @@ export class RecommendationsComponent implements OnInit {
     return this.flippedCards.has(i) ? base + ' card-open' : base;
   }
 
-  sendFeedback(useful: boolean, _comment: string): void {
-=======
   sendFeedback(useful: boolean, comment: string): void {
->>>>>>> feature/frontend-base-integration
     this.feedbackSent   = true;
     this.feedbackUseful = useful;
 

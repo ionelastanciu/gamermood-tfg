@@ -19,6 +19,7 @@ export class SessionComponent {
   submitted     = false;
   isLoading     = false;
   showOtherGame = false;
+  errorMessage  = '';
   readonly intensitySegments = Array.from({ length: 10 }, (_, i) => i + 1);
 
   constructor(
@@ -55,11 +56,7 @@ export class SessionComponent {
   }
 
   resetForm(): void {
-<<<<<<< HEAD
     this.submitted    = false;
-=======
-    this.submitted     = false;
->>>>>>> feature/frontend-base-integration
     this.showOtherGame = false;
     this.form.reset({ intensity: 5 });
     if (this.gameSelectRef?.nativeElement) {
@@ -68,7 +65,8 @@ export class SessionComponent {
   }
 
   onSubmit(): void {
-    this.submitted = true;
+    this.submitted    = true;
+    this.errorMessage = '';
     if (this.form.invalid) return;
 
     const body: SessionRequest = {
@@ -92,11 +90,14 @@ export class SessionComponent {
           }
         });
       },
-      error: () => {
-        this.sessionService.saveLocalSession(body);
-        this.router.navigate(['/recommendations'], {
-          state: { mood: body.mood, game: body.game, intensity: body.intensity }
-        });
+      error: (err) => {
+        if (err.status === 0) {
+          this.errorMessage = 'No se pudo conectar con el servidor. Comprueba tu conexión.';
+        } else if (err.status === 401 || err.status === 403) {
+          this.errorMessage = 'Tu sesión ha expirado. Vuelve a iniciar sesión.';
+        } else {
+          this.errorMessage = 'Error al guardar la sesión. Inténtalo de nuevo.';
+        }
       }
     });
   }

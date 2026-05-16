@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import {
   AbstractControl,
@@ -32,7 +32,8 @@ export class RegisterComponent {
   constructor(
     private fb:     FormBuilder,
     private auth:   AuthService,
-    private router: Router
+    private router: Router,
+    private cdr:    ChangeDetectorRef
   ) {
     this.form = this.fb.group({
       username:        ['', [Validators.required, Validators.minLength(3)]],
@@ -68,6 +69,7 @@ export class RegisterComponent {
         } else {
           this.errorMessage = 'Ha ocurrido un error. Inténtalo de nuevo.';
         }
+        this.cdr.detectChanges();
       }
     });
   }

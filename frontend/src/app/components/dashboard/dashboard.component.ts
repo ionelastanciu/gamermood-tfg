@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -14,7 +14,9 @@ import { SessionResponse } from '../../models/session.model';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  sessions: SessionResponse[] = [];
+  sessions:     SessionResponse[] = [];
+  loadError     = false;
+  isLoadingSessions = false;
 
   readonly moodLabels: Record<string, string> = {
     happy:   'Genial',
@@ -25,13 +27,42 @@ export class DashboardComponent implements OnInit {
   constructor(
     private auth:           AuthService,
     private sessionService: SessionService,
-    private router:         Router
+    private router:         Router,
+    private cdr:            ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.loadSessions();
+  }
+
+  loadSessions(): void {
+    this.loadError        = false;
+    this.isLoadingSessions = true;
     this.sessionService.getSessions().pipe(
-      catchError(() => of([] as SessionResponse[]))
-    ).subscribe(data => { this.sessions = data; });
+      catchError((err) => {
+        if (err.status === 401 || err.status === 403) {
+          this.auth.logout();
+          this.router.navigate(['/login']);
+        }
+        this.loadError = true;
+        return of([] as SessionResponse[]);
+      })
+    ).subscribe(data => {
+      this.sessions          = data;
+      this.isLoadingSessions = false;
+      this.cdr.detectChanges();
+    });
+  }
+
+  deleteSession(id: number): void {
+    if (!confirm('¿Eliminar esta sesión?')) return;
+    this.sessionService.deleteSession(id).subscribe({
+      next: () => {
+        this.sessions = this.sessions.filter(s => s.id !== id);
+        this.cdr.detectChanges();
+      },
+      error: () => alert('No se pudo eliminar la sesión.')
+    });
   }
 
   formatDate(iso: string): string {

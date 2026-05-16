@@ -17,6 +17,10 @@
       <p>Únete a GamerMood</p>
     </div>
 
+    @if (errorMessage) {
+      <div class="error-banner">{{ errorMessage }}</div>
+    }
+
     <form [formGroup]="form" (ngSubmit)="onRegister()">
 
       <!-- Nombre de usuario -->

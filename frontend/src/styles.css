@@ -290,13 +290,24 @@ a.feature-card:hover .card-link-hint {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: #d1d5db;
+    padding: 0.45rem 1rem;
+    background: rgba(184, 79, 255, 0.08);
+    border: 1px solid rgba(184, 79, 255, 0.3);
+    border-radius: 0.5rem;
+    color: #ce93d8;
     text-decoration: none;
-    transition: color 0.3s;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    transition: all 0.2s;
 }
 
 .back-home:hover {
-    color: white;
+    background: rgba(184, 79, 255, 0.16);
+    border-color: #b84fff;
+    color: #e0b4ff;
+    box-shadow: 0 0 12px rgba(184, 79, 255, 0.35), 0 0 24px rgba(184, 79, 255, 0.1);
+    transform: translateX(-2px);
 }
 
 .login-box {

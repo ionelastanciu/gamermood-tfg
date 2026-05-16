@@ -11,14 +11,25 @@
 }
 
 .error-banner {
-  background: rgba(248, 113, 113, 0.12);
-  border: 1px solid rgba(248, 113, 113, 0.4);
+  background: rgba(248, 113, 113, 0.15);
+  border: 1px solid rgba(248, 113, 113, 0.55);
   border-radius: 0.5rem;
-  color: #f87171;
+  color: #fca5a5;
   font-size: 0.875rem;
-  padding: 0.75rem 1rem;
+  font-weight: 600;
+  padding: 0.85rem 1rem;
   margin-bottom: 1.25rem;
   text-align: center;
+  box-shadow: 0 0 14px rgba(248, 113, 113, 0.2);
+  animation: error-shake 0.4s ease;
+}
+
+@keyframes error-shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-7px); }
+  40%       { transform: translateX(7px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
 }
 
 .btn-submit:disabled {

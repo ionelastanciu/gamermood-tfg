@@ -35,8 +35,11 @@ export class SessionService {
   }
 
   getSessions(): Observable<SessionResponse[]> {
-    // TODO: endpoint GET /api/sessions (pendiente de backend)
     return this.http.get<SessionResponse[]>(`${API}/sessions`, { headers: this.headers() });
+  }
+
+  deleteSession(id: number): Observable<void> {
+    return this.http.delete<void>(`${API}/sessions/${id}`, { headers: this.headers() });
   }
 
   getRecommendation(sessionId: number): Observable<Recommendation> {
