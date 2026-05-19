@@ -2,7 +2,7 @@ export interface Recommendation {
   id: number;
   sesionId: number;
   texto: string;
-  fuente: string;   // 'REGLAS' | 'OPENAI'
+  fuente: string;
   createdAt: string;
 }
 

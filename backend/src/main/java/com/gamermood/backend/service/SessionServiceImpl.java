@@ -54,6 +54,14 @@ public class SessionServiceImpl implements SessionService {
         return toDto(sesion);
     }
 
+    @Override
+    @Transactional
+    public void deleteSession(Long userId, Long sessionId) {
+        GameSession sesion = sessionRepository.findByIdAndUsuarioId(sessionId, userId)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Sesión no encontrada"));
+        sessionRepository.delete(sesion);
+    }
+
     private SessionResponseDto toDto(GameSession sesion) {
         return new SessionResponseDto(
                 sesion.getId(),

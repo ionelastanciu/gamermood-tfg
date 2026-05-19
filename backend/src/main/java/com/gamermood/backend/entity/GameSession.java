@@ -18,27 +18,29 @@ public class GameSession {
     @Column(nullable = false, length = 100)
     private String game;
 
-    // Estado de ánimo: happy, neutral, sad, angry, excited
     @Column(nullable = false, length = 50)
     private String mood;
 
-    // Intensidad de la sesión del 1 al 10
     @Column(nullable = false)
     private Integer intensity;
 
-    // Descripción o experiencia libre del usuario
     @Column(length = 500)
     private String experience;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @OneToOne(mappedBy = "sesion", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Recomendacion recomendacion;
+
+    @OneToMany(mappedBy = "sesion", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.Set<TransicionEstado> transiciones = new java.util.HashSet<>();
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
 
-    // Getters y setters
     public Long getId() { return id; }
     public User getUsuario() { return usuario; }
     public void setUsuario(User usuario) { this.usuario = usuario; }
@@ -51,4 +53,8 @@ public class GameSession {
     public String getExperience() { return experience; }
     public void setExperience(String experience) { this.experience = experience; }
     public LocalDateTime getCreatedAt() { return createdAt; }
+    public Recomendacion getRecomendacion() { return recomendacion; }
+    public void setRecomendacion(Recomendacion recomendacion) { this.recomendacion = recomendacion; }
+    public java.util.Set<TransicionEstado> getTransiciones() { return transiciones; }
+    public void setTransiciones(java.util.Set<TransicionEstado> transiciones) { this.transiciones = transiciones; }
 }

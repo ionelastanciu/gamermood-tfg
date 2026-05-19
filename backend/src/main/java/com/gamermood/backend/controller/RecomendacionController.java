@@ -21,7 +21,6 @@ public class RecomendacionController {
         this.userRepository = userRepository;
     }
 
-    // POST /api/recommendations/{sesionId}
     @PostMapping("/{sesionId}")
     public ResponseEntity<RecomendacionResponseDto> generar(
             @PathVariable Long sesionId,
@@ -31,7 +30,6 @@ public class RecomendacionController {
         return ResponseEntity.ok(recomendacionService.generarParaSesion(sesionId, userId));
     }
 
-    // POST /api/recommendations/{sesionId}/retry
     @PostMapping("/{sesionId}/retry")
     public ResponseEntity<RecomendacionResponseDto> retry(
             @PathVariable Long sesionId,

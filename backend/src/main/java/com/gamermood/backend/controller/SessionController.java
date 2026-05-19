@@ -52,6 +52,16 @@ public class SessionController {
         return ResponseEntity.ok(sessionService.getSessionById(userId, id));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        Long userId = resolverUserId(userDetails);
+        sessionService.deleteSession(userId, id);
+        return ResponseEntity.noContent().build();
+    }
+
     private Long resolverUserId(UserDetails userDetails) {
         return userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"))

@@ -11,10 +11,11 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 /**
- * Servicio para generar recomendaciones usando la API de OpenAI.
+ * Integración opcional con OpenAI.
  *
- * Si no hay API key configurada o la llamada falla,
- * devuelve null para que el llamador use el sistema de reglas como fallback.
+ * En la configuración actual del proyecto no se usa OpenAI por requerir facturación.
+ * Si no hay API key o la llamada falla, el servicio devuelve null y el flujo continúa
+ * con las recomendaciones por reglas definidas en RecomendacionService.
  */
 @Service
 public class OpenAiService {
@@ -32,15 +33,6 @@ public class OpenAiService {
     @Value("${openai.max-tokens:500}")
     private int maxTokens;
 
-    /**
-     * Genera una recomendación para el usuario según su sesión de juego.
-     *
-     * @param juego       nombre del juego
-     * @param mood        estado de ánimo (happy, sad, neutral, angry, excited)
-     * @param intensidad  nivel de intensidad del 1 al 10
-     * @param descripcion texto libre que escribió el usuario
-     * @return texto de la recomendación, o null si no está disponible
-     */
     public String generarRecomendacion(String juego, String mood, int intensidad, String descripcion) {
         if (apiKey == null || apiKey.isBlank()) {
             log.warn("OPENAI_API_KEY no configurada. Usando sistema de reglas como fallback.");
@@ -96,8 +88,7 @@ public class OpenAiService {
     }
 
     /**
-     * Extrae el texto del campo choices[0].message.content de la respuesta JSON.
-     * Se hace sin librería externa para no añadir dependencias innecesarias.
+     * Extrae choices[0].message.content sin añadir una dependencia JSON solo para esta llamada opcional.
      */
     private String extraerTextoRespuesta(String json) {
         int inicio = json.indexOf("\"content\":") + 11;

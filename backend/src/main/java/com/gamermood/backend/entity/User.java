@@ -39,6 +39,9 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<GameSession> sesiones = new HashSet<>();
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -50,7 +53,6 @@ public class User {
         updatedAt = LocalDateTime.now();
     }
 
-    // Getters y setters
     public Long getId() { return id; }
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
@@ -64,4 +66,6 @@ public class User {
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public Set<Role> getRoles() { return roles; }
     public void setRoles(Set<Role> roles) { this.roles = roles; }
+    public Set<GameSession> getSesiones() { return sesiones; }
+    public void setSesiones(Set<GameSession> sesiones) { this.sesiones = sesiones; }
 }

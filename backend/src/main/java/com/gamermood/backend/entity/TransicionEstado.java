@@ -34,7 +34,6 @@ public class TransicionEstado {
         createdAt = LocalDateTime.now();
     }
 
-    // Getters y setters
     public Long getId() { return id; }
     public GameSession getSesion() { return sesion; }
     public void setSesion(GameSession sesion) { this.sesion = sesion; }

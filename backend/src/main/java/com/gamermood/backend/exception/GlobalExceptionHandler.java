@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Errores de validación (@Valid en DTOs)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidacion(
             MethodArgumentNotValidException ex, HttpServletRequest request) {
@@ -25,7 +24,6 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, mensaje, request.getRequestURI());
     }
 
-    // Email ya registrado
     @ExceptionHandler(EmailYaRegistradoException.class)
     public ResponseEntity<ApiError> handleEmailDuplicado(
             EmailYaRegistradoException ex, HttpServletRequest request) {
@@ -33,7 +31,6 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.CONFLICT, ex.getMessage(), request.getRequestURI());
     }
 
-    // Credenciales incorrectas en login
     @ExceptionHandler(CredencialesInvalidasException.class)
     public ResponseEntity<ApiError> handleCredenciales(
             CredencialesInvalidasException ex, HttpServletRequest request) {
@@ -41,7 +38,6 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.UNAUTHORIZED, ex.getMessage(), request.getRequestURI());
     }
 
-    // Recurso no encontrado (sesión, usuario, etc.)
     @ExceptionHandler(RecursoNoEncontradoException.class)
     public ResponseEntity<ApiError> handleNoEncontrado(
             RecursoNoEncontradoException ex, HttpServletRequest request) {
@@ -49,7 +45,6 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.NOT_FOUND, ex.getMessage(), request.getRequestURI());
     }
 
-    // Argumentos incorrectos (contraseñas no coinciden, etc.)
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiError> handleIllegalArgument(
             IllegalArgumentException ex, HttpServletRequest request) {
@@ -57,7 +52,6 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, ex.getMessage(), request.getRequestURI());
     }
 
-    // Cualquier otro error no controlado
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGenerico(
             Exception ex, HttpServletRequest request) {

@@ -8,8 +8,6 @@
     </a>
 
     <div class="rec-content">
-
-        <!-- ── Result header ────────────────────────────────── -->
         <header class="result-header anim-fade-up">
             <span [class]="'result-tag result-tag-' + currentMood">{{resultTag}}</span>
             <div class="result-icon-wrap">
@@ -20,8 +18,6 @@
             <h2>Recomendaciones Personalizadas</h2>
             <p class="result-sub">{{moodMessage}}</p>
         </header>
-
-        <!-- ── Session snapshot ─────────────────────────────── -->
         <div class="session-snap anim-fade-up anim-d1">
 
             <div [class]="'snap-item snap-mood-' + currentMood">
@@ -77,8 +73,6 @@
                 </div>
             }
         </div>
-
-        <!-- ── Advice section ───────────────────────────────── -->
         <section class="rec-section anim-scale-in anim-d2">
             <h3 class="rec-section-title">
                 <svg viewBox="0 0 24 24" fill="currentColor">
@@ -107,8 +101,6 @@
                 </div>
             }
         </section>
-
-        <!-- ── Games section ────────────────────────────────── -->
         <section class="rec-section anim-scale-in anim-d3">
             <h3 class="rec-section-title">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -158,8 +150,6 @@
                 </div>
             }
         </section>
-
-        <!-- ── Feedback ─────────────────────────────────────── -->
         @if (!feedbackSent) {
             <div class="feedback-section anim-fade-up anim-d5">
                 <p class="feedback-title">¿Te han servido estas recomendaciones?</p>

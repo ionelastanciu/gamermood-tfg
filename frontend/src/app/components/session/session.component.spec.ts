@@ -95,15 +95,15 @@ describe('Session', () => {
     );
   });
 
-  it('onSubmit navega igualmente si createSession falla (modo offline)', () => {
+  it('onSubmit muestra error si createSession falla', () => {
     const router = TestBed.inject(Router);
     vi.spyOn(router, 'navigate').mockResolvedValue(true);
-    sessionSpy.createSession.mockReturnValue(throwError(() => new Error('Network error')));
+    sessionSpy.createSession.mockReturnValue(throwError(() => ({ status: 0 })));
 
     component.form.setValue({ game: 'Valorant', mood: 'happy', intensity: 7, experience: 'Fun session' });
     component.onSubmit();
 
-    expect(sessionSpy.saveLocalSession).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(['/recommendations'], expect.any(Object));
+    expect(component.errorMessage).toBe('No se pudo conectar con el servidor. Comprueba tu conexión.');
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 });

@@ -12,4 +12,6 @@ public interface SessionService {
     List<SessionResponseDto> getSessions(Long userId);
 
     SessionResponseDto getSessionById(Long userId, Long sessionId);
+
+    void deleteSession(Long userId, Long sessionId);
 }

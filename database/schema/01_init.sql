@@ -1,184 +1,224 @@
 -- =============================================================
--- GamerMood 2.0 — Script inicial de base de datos
--- Base de datos: gamermood  |  Motor: PostgreSQL 15+
---
--- Ejecutar desde cero:
---   psql -U postgres -c "CREATE DATABASE gamermood;"
---   psql -U postgres -d gamermood -f 01_init.sql
+-- GamerMood - esquema inicial PostgreSQL
+-- Fuente de verdad alineada con las entidades JPA actuales.
+-- Este script se ejecuta automáticamente solo cuando el volumen
+-- de PostgreSQL se crea por primera vez.
 -- =============================================================
 
--- -------------------------------------------------------------
--- FUNCIÓN AUXILIAR: actualiza updated_at automáticamente
--- -------------------------------------------------------------
-CREATE OR REPLACE FUNCTION set_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- -------------------------------------------------------------
--- 1. ROLES
--- -------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS roles (
-    id   SERIAL      PRIMARY KEY,
-    name VARCHAR(30) NOT NULL UNIQUE   -- 'USER', 'ADMIN'
+    id BIGSERIAL PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL UNIQUE
 );
 
--- -------------------------------------------------------------
--- 2. USUARIOS
--- -------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS usuarios (
-    id            SERIAL       PRIMARY KEY,
-    username      VARCHAR(50)  NOT NULL UNIQUE,
-    email         VARCHAR(100) NOT NULL UNIQUE,
+    id BIGSERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
-    activo        BOOLEAN      NOT NULL DEFAULT TRUE,
-    created_at    TIMESTAMP    NOT NULL DEFAULT NOW(),
-    updated_at    TIMESTAMP    NOT NULL DEFAULT NOW()
+    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP
 );
 
--- Trigger: actualiza updated_at en cada UPDATE de usuarios
-CREATE OR REPLACE TRIGGER trg_usuarios_updated_at
-    BEFORE UPDATE ON usuarios
-    FOR EACH ROW EXECUTE FUNCTION set_updated_at();
-
--- -------------------------------------------------------------
--- 3. USUARIOS_ROLES  (N:M)
--- -------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS usuarios_roles (
-    usuario_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
-    rol_id     INTEGER NOT NULL REFERENCES roles(id)    ON DELETE CASCADE,
-    PRIMARY KEY (usuario_id, rol_id)
+    usuario_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL,
+    PRIMARY KEY (usuario_id, role_id),
+    CONSTRAINT fk_usuarios_roles_usuario
+        FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    CONSTRAINT fk_usuarios_roles_role
+        FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
 );
 
--- -------------------------------------------------------------
--- 4. SESIONES DE JUEGO
--- -------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS sesiones_juego (
-    id          SERIAL       PRIMARY KEY,
-    usuario_id  INTEGER      NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
-    game        VARCHAR(150) NOT NULL,
-    mood        VARCHAR(20)  NOT NULL CHECK (mood IN ('happy', 'neutral', 'sad')),
-    intensity   SMALLINT     NOT NULL CHECK (intensity BETWEEN 1 AND 10),
-    experience  TEXT,
-    created_at  TIMESTAMP    NOT NULL DEFAULT NOW()
+    id BIGSERIAL PRIMARY KEY,
+    usuario_id BIGINT NOT NULL,
+    game VARCHAR(100) NOT NULL,
+    mood VARCHAR(50) NOT NULL,
+    intensity INTEGER NOT NULL CHECK (intensity BETWEEN 1 AND 10),
+    experience VARCHAR(500),
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_sesiones_usuario
+        FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
--- Índice: listar sesiones de un usuario ordenadas por fecha
 CREATE INDEX IF NOT EXISTS idx_sesiones_usuario_fecha
     ON sesiones_juego (usuario_id, created_at DESC);
 
--- -------------------------------------------------------------
--- 5. CATEGORÍAS DE RECOMENDACIÓN
--- -------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS categorias_recomendacion (
-    id     SERIAL      PRIMARY KEY,
-    nombre VARCHAR(80) NOT NULL UNIQUE
+CREATE TABLE IF NOT EXISTS recomendaciones (
+    id BIGSERIAL PRIMARY KEY,
+    sesion_id BIGINT NOT NULL UNIQUE,
+    texto VARCHAR(1000) NOT NULL,
+    fuente VARCHAR(20) NOT NULL DEFAULT 'REGLAS',
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_recomendaciones_sesion
+        FOREIGN KEY (sesion_id) REFERENCES sesiones_juego(id) ON DELETE CASCADE,
+    CONSTRAINT chk_recomendaciones_fuente
+        CHECK (fuente IN ('REGLAS', 'OPENAI'))
 );
 
--- -------------------------------------------------------------
--- 6. PROMPTS IA
--- -------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS prompts_ia (
-    id        SERIAL       PRIMARY KEY,
-    nombre    VARCHAR(100) NOT NULL UNIQUE,
-    contenido TEXT         NOT NULL,
-    activo    BOOLEAN      NOT NULL DEFAULT TRUE
-);
-
--- -------------------------------------------------------------
--- 7. RUNBOOKS
--- -------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS runbooks (
-    id          SERIAL       PRIMARY KEY,
-    nombre      VARCHAR(100) NOT NULL,
-    descripcion TEXT,
-    prompt_id   INTEGER REFERENCES prompts_ia(id) ON DELETE SET NULL
-);
-
--- -------------------------------------------------------------
--- 8. RECOMENDACIONES GENERADAS
--- -------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS recomendaciones_generadas (
-    id           SERIAL    PRIMARY KEY,
-    sesion_id    INTEGER   NOT NULL REFERENCES sesiones_juego(id) ON DELETE CASCADE,
-    categoria_id INTEGER   REFERENCES categorias_recomendacion(id) ON DELETE SET NULL,
-    runbook_id   INTEGER   REFERENCES runbooks(id) ON DELETE SET NULL,
-    contenido    TEXT      NOT NULL,
-    fuente       VARCHAR(20) NOT NULL DEFAULT 'REGLAS' CHECK (fuente IN ('REGLAS', 'OPENAI')),
-    created_at   TIMESTAMP NOT NULL DEFAULT NOW()
-);
-
--- Índice: obtener recomendaciones de una sesión
 CREATE INDEX IF NOT EXISTS idx_recomendaciones_sesion
-    ON recomendaciones_generadas (sesion_id);
+    ON recomendaciones (sesion_id);
 
--- -------------------------------------------------------------
--- 9. FEEDBACK DE RECOMENDACIÓN
--- -------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS feedback_recomendacion (
-    id               SERIAL    PRIMARY KEY,
-    recomendacion_id INTEGER   NOT NULL REFERENCES recomendaciones_generadas(id) ON DELETE CASCADE,
-    util             BOOLEAN   NOT NULL,
-    comentario       TEXT,
-    created_at       TIMESTAMP NOT NULL DEFAULT NOW()
+    id BIGSERIAL PRIMARY KEY,
+    recomendacion_id BIGINT NOT NULL UNIQUE,
+    util BOOLEAN NOT NULL,
+    comentario VARCHAR(500),
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_feedback_recomendacion
+        FOREIGN KEY (recomendacion_id) REFERENCES recomendaciones(id) ON DELETE CASCADE
 );
 
--- Índice: consultar feedback de una recomendación
-CREATE INDEX IF NOT EXISTS idx_feedback_recomendacion
-    ON feedback_recomendacion (recomendacion_id);
-
--- -------------------------------------------------------------
--- 10. ESTADOS DE FLUJO
--- -------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS estados_flujo (
-    id          SERIAL      PRIMARY KEY,
-    nombre      VARCHAR(50) NOT NULL UNIQUE,
-    descripcion VARCHAR(150)
+CREATE TABLE IF NOT EXISTS transiciones_estado (
+    id BIGSERIAL PRIMARY KEY,
+    sesion_id BIGINT NOT NULL,
+    estado_anterior VARCHAR(40),
+    estado_nuevo VARCHAR(40) NOT NULL,
+    motivo VARCHAR(200),
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_transiciones_sesion
+        FOREIGN KEY (sesion_id) REFERENCES sesiones_juego(id) ON DELETE CASCADE
 );
 
--- -------------------------------------------------------------
--- 11. TRANSICIONES DE FLUJO
---     Registra cada cambio de estado de una sesión (log de trazabilidad).
---     El estado actual de una sesión es la transición más reciente.
--- -------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS transiciones_flujo (
-    id              SERIAL    PRIMARY KEY,
-    sesion_id       INTEGER   NOT NULL REFERENCES sesiones_juego(id) ON DELETE CASCADE,
-    estado_desde_id INTEGER   REFERENCES estados_flujo(id),   -- NULL en la transición inicial
-    estado_hasta_id INTEGER   NOT NULL REFERENCES estados_flujo(id),
-    created_at      TIMESTAMP NOT NULL DEFAULT NOW()
-);
-
--- Índice: historial de transiciones de una sesión
 CREATE INDEX IF NOT EXISTS idx_transiciones_sesion
-    ON transiciones_flujo (sesion_id, created_at DESC);
+    ON transiciones_estado (sesion_id, created_at DESC);
 
--- =============================================================
--- DATOS INICIALES
--- =============================================================
-
--- Roles
-INSERT INTO roles (name) VALUES ('USER'), ('ADMIN')
-    ON CONFLICT (name) DO NOTHING;
-
--- Categorías de recomendación
-INSERT INTO categorias_recomendacion (nombre) VALUES
-    ('Consejos emocionales'),
-    ('Juegos recomendados'),
-    ('Descanso'),
-    ('Social'),
-    ('Rendimiento')
+INSERT INTO roles (nombre) VALUES ('ROLE_USER')
     ON CONFLICT (nombre) DO NOTHING;
 
--- Estados del flujo de recomendación
-INSERT INTO estados_flujo (nombre, descripcion) VALUES
-    ('SESION_REGISTRADA',        'El usuario ha completado y guardado la sesión de juego'),
-    ('SESION_CLASIFICADA',       'La sesión ha sido analizada y clasificada por mood e intensidad'),
-    ('RECOMENDACION_GENERADA',   'Se han generado recomendaciones para la sesión'),
-    ('FEEDBACK_RECIBIDO',        'El usuario ha valorado las recomendaciones'),
-    ('FLUJO_CERRADO',            'El flujo ha finalizado con el usuario satisfecho'),
-    ('REINTENTO_SOLICITADO',     'El usuario no estaba satisfecho y solicita nuevas recomendaciones')
+INSERT INTO roles (nombre) VALUES ('ROLE_ADMIN')
     ON CONFLICT (nombre) DO NOTHING;
+
+-- Normaliza claves foráneas en bases ya creadas con Hibernate antes de este script.
+DO $$
+DECLARE constraint_name text;
+BEGIN
+    SELECT c.conname INTO constraint_name
+    FROM pg_constraint c
+    JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = ANY (c.conkey)
+    WHERE c.conrelid = 'sesiones_juego'::regclass
+      AND c.contype = 'f'
+      AND a.attname = 'usuario_id';
+
+    IF constraint_name IS NOT NULL THEN
+        EXECUTE format('ALTER TABLE sesiones_juego DROP CONSTRAINT %I', constraint_name);
+    END IF;
+
+    IF constraint_name IS NULL OR constraint_name <> 'fk_sesiones_usuario' THEN
+        ALTER TABLE sesiones_juego DROP CONSTRAINT IF EXISTS fk_sesiones_usuario;
+    END IF;
+    ALTER TABLE sesiones_juego
+        ADD CONSTRAINT fk_sesiones_usuario
+        FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE;
+END $$;
+
+DO $$
+DECLARE constraint_name text;
+BEGIN
+    SELECT c.conname INTO constraint_name
+    FROM pg_constraint c
+    JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = ANY (c.conkey)
+    WHERE c.conrelid = 'recomendaciones'::regclass
+      AND c.contype = 'f'
+      AND a.attname = 'sesion_id';
+
+    IF constraint_name IS NOT NULL THEN
+        EXECUTE format('ALTER TABLE recomendaciones DROP CONSTRAINT %I', constraint_name);
+    END IF;
+
+    IF constraint_name IS NULL OR constraint_name <> 'fk_recomendaciones_sesion' THEN
+        ALTER TABLE recomendaciones DROP CONSTRAINT IF EXISTS fk_recomendaciones_sesion;
+    END IF;
+    ALTER TABLE recomendaciones
+        ADD CONSTRAINT fk_recomendaciones_sesion
+        FOREIGN KEY (sesion_id) REFERENCES sesiones_juego(id) ON DELETE CASCADE;
+END $$;
+
+DO $$
+DECLARE constraint_name text;
+BEGIN
+    SELECT c.conname INTO constraint_name
+    FROM pg_constraint c
+    JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = ANY (c.conkey)
+    WHERE c.conrelid = 'feedback_recomendacion'::regclass
+      AND c.contype = 'f'
+      AND a.attname = 'recomendacion_id';
+
+    IF constraint_name IS NOT NULL THEN
+        EXECUTE format('ALTER TABLE feedback_recomendacion DROP CONSTRAINT %I', constraint_name);
+    END IF;
+
+    IF constraint_name IS NULL OR constraint_name <> 'fk_feedback_recomendacion' THEN
+        ALTER TABLE feedback_recomendacion DROP CONSTRAINT IF EXISTS fk_feedback_recomendacion;
+    END IF;
+    ALTER TABLE feedback_recomendacion
+        ADD CONSTRAINT fk_feedback_recomendacion
+        FOREIGN KEY (recomendacion_id) REFERENCES recomendaciones(id) ON DELETE CASCADE;
+END $$;
+
+DO $$
+DECLARE constraint_name text;
+BEGIN
+    SELECT c.conname INTO constraint_name
+    FROM pg_constraint c
+    JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = ANY (c.conkey)
+    WHERE c.conrelid = 'transiciones_estado'::regclass
+      AND c.contype = 'f'
+      AND a.attname = 'sesion_id';
+
+    IF constraint_name IS NOT NULL THEN
+        EXECUTE format('ALTER TABLE transiciones_estado DROP CONSTRAINT %I', constraint_name);
+    END IF;
+
+    IF constraint_name IS NULL OR constraint_name <> 'fk_transiciones_sesion' THEN
+        ALTER TABLE transiciones_estado DROP CONSTRAINT IF EXISTS fk_transiciones_sesion;
+    END IF;
+    ALTER TABLE transiciones_estado
+        ADD CONSTRAINT fk_transiciones_sesion
+        FOREIGN KEY (sesion_id) REFERENCES sesiones_juego(id) ON DELETE CASCADE;
+END $$;
+
+DO $$
+DECLARE constraint_name text;
+BEGIN
+    SELECT c.conname INTO constraint_name
+    FROM pg_constraint c
+    JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = ANY (c.conkey)
+    WHERE c.conrelid = 'usuarios_roles'::regclass
+      AND c.contype = 'f'
+      AND a.attname = 'usuario_id';
+
+    IF constraint_name IS NOT NULL THEN
+        EXECUTE format('ALTER TABLE usuarios_roles DROP CONSTRAINT %I', constraint_name);
+    END IF;
+
+    IF constraint_name IS NULL OR constraint_name <> 'fk_usuarios_roles_usuario' THEN
+        ALTER TABLE usuarios_roles DROP CONSTRAINT IF EXISTS fk_usuarios_roles_usuario;
+    END IF;
+    ALTER TABLE usuarios_roles
+        ADD CONSTRAINT fk_usuarios_roles_usuario
+        FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE;
+END $$;
+
+DO $$
+DECLARE constraint_name text;
+BEGIN
+    SELECT c.conname INTO constraint_name
+    FROM pg_constraint c
+    JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = ANY (c.conkey)
+    WHERE c.conrelid = 'usuarios_roles'::regclass
+      AND c.contype = 'f'
+      AND a.attname = 'role_id';
+
+    IF constraint_name IS NOT NULL THEN
+        EXECUTE format('ALTER TABLE usuarios_roles DROP CONSTRAINT %I', constraint_name);
+    END IF;
+
+    IF constraint_name IS NULL OR constraint_name <> 'fk_usuarios_roles_role' THEN
+        ALTER TABLE usuarios_roles DROP CONSTRAINT IF EXISTS fk_usuarios_roles_role;
+    END IF;
+    ALTER TABLE usuarios_roles
+        ADD CONSTRAINT fk_usuarios_roles_role
+        FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE;
+END $$;

@@ -1,182 +1,141 @@
-# GamerMood 2.0
+# GamerMood
 
-Aplicación web full-stack para registrar sesiones de juego, analizar el estado emocional del usuario y generar recomendaciones personalizadas mediante reglas y OpenAI.
+GamerMood es una aplicación web desarrollada como proyecto de TFG para registrar sesiones de juego y relacionarlas con el estado de ánimo del usuario. La idea es sencilla: después de jugar, el usuario guarda cómo se ha sentido, la intensidad de la sesión y una breve experiencia; a partir de esos datos, el sistema genera una recomendación para la siguiente partida.
 
-Proyecto de Trabajo de Fin de Grado (TFG) del ciclo formativo de Desarrollo de Aplicaciones Multiplataforma (DAM).
+El proyecto está dividido en frontend, backend y base de datos. La autenticación se hace con JWT y la persistencia con PostgreSQL.
 
----
+## Tecnologías usadas
 
-## Tecnologías
+| Parte | Tecnología |
+| --- | --- |
+| Frontend | Angular 21, TypeScript 5.9, RxJS |
+| Backend | Java 17, Spring Boot 3.5.13, Spring Security, Spring Data JPA |
+| Seguridad | JWT con JJWT 0.12.6 |
+| Base de datos | PostgreSQL 17 |
+| Entorno local | Docker Compose |
+| Tests frontend | Vitest / Angular test builder |
+| Build backend | Maven Wrapper |
 
-| Capa | Tecnología | Versión |
-|------|-----------|---------|
-| Frontend | Angular | 21 |
-| Backend | Spring Boot | 3.5.13 |
-| Lenguaje backend | Java | 17 |
-| Build backend | Maven | 3.9+ |
-| Base de datos | PostgreSQL | 17 |
-| Contenedores | Docker + Docker Compose | — |
-| IA | OpenAI API | gpt-4o-mini |
+## Requisitos
 
----
+Para levantar el proyecto en local hace falta tener instalado:
 
-## Requisitos previos
+- Java JDK 17
+- Node.js 22 o compatible con Angular 21
+- npm 11
+- Docker Desktop o Docker Engine con Docker Compose
 
-Instalar las siguientes herramientas antes de levantar el proyecto:
-
-| Herramienta | Versión mínima | Descarga |
-|-------------|---------------|----------|
-| Java JDK | 17 | https://adoptium.net |
-| Maven | 3.9 | https://maven.apache.org/download.cgi |
-| Node.js | 22 LTS | https://nodejs.org |
-| npm | 11 | incluido con Node.js |
-| Angular CLI | 21 | `npm install -g @angular/cli` |
-| Docker Desktop | Cualquiera reciente | https://www.docker.com/products/docker-desktop |
-
-Verificar instalaciones:
+Comprobaciones rápidas:
 
 ```bash
 java -version
-mvn -version
 node -v
 npm -v
-ng version
-docker -v
+docker --version
 docker compose version
 ```
 
----
+No es necesario instalar Maven manualmente porque el backend incluye `mvnw` y `mvnw.cmd`.
 
-## Estructura del proyecto
+## Variables de entorno
 
-```
-gamermood-tfg/
-├── backend/                  # API REST Spring Boot
-│   ├── src/
-│   │   └── main/
-│   │       ├── java/com/gamermood/backend/
-│   │       │   ├── controller/
-│   │       │   ├── service/
-│   │       │   ├── model/
-│   │       │   ├── repository/
-│   │       │   └── security/
-│   │       └── resources/
-│   │           ├── application.yaml
-│   │           ├── application-dev.yaml
-│   │           └── application-prod.yaml
-│   └── pom.xml
-│
-├── frontend/                 # SPA Angular
-│   ├── src/
-│   │   └── app/
-│   │       ├── components/
-│   │       ├── services/
-│   │       ├── models/
-│   │       └── interceptors/
-│   ├── package.json
-│   └── angular.json
-│
-├── database/
-│   └── schema/
-│       └── 01_init.sql       # DDL inicial de la base de datos
-│
-├── docs/                     # Documentación técnica
-├── docker-compose.yml        # Levanta PostgreSQL
-├── .env.example              # Plantilla de variables de entorno
-└── README.md
+El repositorio incluye `.env.example`. Para trabajar en local se puede crear el archivo `.env` desde esa plantilla:
+
+```powershell
+Copy-Item .env.example .env
 ```
 
----
-
-## Puertos
-
-| Servicio | Puerto | URL |
-|----------|--------|-----|
-| Frontend Angular | 4200 | http://localhost:4200 |
-| Backend Spring Boot | 8081 | http://localhost:8081/api |
-| PostgreSQL | 5432 | localhost:5432 |
-
-> El backend expone todos sus endpoints bajo el prefijo `/api`.
-
----
-
-## Configuración de variables de entorno
-
-Copiar el fichero de ejemplo y ajustar los valores:
+En Linux o macOS:
 
 ```bash
 cp .env.example .env
 ```
 
-Editar `.env` con los valores reales para el entorno local. Como mínimo, proporcionar una clave válida de OpenAI si se quieren usar las recomendaciones de IA.
+Variables usadas:
 
-Ver [.env.example](.env.example) para la lista completa de variables.
+| Variable | Descripción |
+| --- | --- |
+| `SPRING_PROFILES_ACTIVE` | Perfil de Spring. En local se usa `dev`. |
+| `SERVER_PORT` | Puerto del backend. Por defecto `8081`. |
+| `DB_HOST` | Host de PostgreSQL. En local, `localhost`. |
+| `DB_PORT` | Puerto publicado de PostgreSQL. Por defecto `5432`. |
+| `DB_NAME` | Nombre de la base de datos. |
+| `DB_USER` | Usuario de PostgreSQL. |
+| `DB_PASSWORD` | Contraseña de PostgreSQL. |
+| `JWT_SECRET` | Clave usada para firmar los tokens JWT. Debe ser larga y privada. |
+| `CORS_ALLOWED_ORIGINS` | Origen permitido para el frontend. En local, `http://localhost:4200`. |
+| `OPENAI_API_KEY` | Opcional. En la entrega final se deja vacío. |
 
-> **El fichero `.env` nunca debe subirse al repositorio.** Ya está incluido en `.gitignore`.
+No se deben subir secretos reales al repositorio.
 
----
+## Puertos
+
+| Servicio | Puerto | URL |
+| --- | --- | --- |
+| Frontend | 4200 | `http://localhost:4200` |
+| Backend | 8081 | `http://localhost:8081/api` |
+| PostgreSQL | 5432 | `localhost:5432` |
+
+El backend tiene configurado el context path `/api`, así que todos los endpoints empiezan por `http://localhost:8081/api`.
 
 ## Arranque del proyecto
 
-### Paso 1 — Levantar PostgreSQL con Docker
+### 1. Levantar PostgreSQL
+
+Desde la raíz del repositorio:
 
 ```bash
 docker compose up -d
 ```
 
-Verificar que el contenedor arrancó correctamente:
+Comprobar el estado:
 
 ```bash
 docker compose ps
-docker compose logs postgres
 ```
 
-La base de datos `gamermood` se crea automáticamente en el primer arranque.
+El servicio de PostgreSQL usa la imagen `postgres:17` y monta el script `database/schema/01_init.sql` para crear el esquema inicial.
 
-### Paso 2 — Aplicar el esquema de base de datos
-
-La primera vez (o tras un `docker compose down -v`), ejecutar el script de inicialización:
-
-**Opción A — psql en terminal:**
-```bash
-docker exec -i postgres-2DAM-V psql -U postgres -d gamermood < database/schema/01_init.sql
-```
-
-**Opción B — desde DBeaver u otro cliente:**
-Conectar a `localhost:5432` con usuario `postgres` / contraseña `postgres` y ejecutar `database/schema/01_init.sql` sobre la base de datos `gamermood`.
-
-### Paso 3 — Arrancar el backend
+Importante: PostgreSQL solo ejecuta los scripts de inicialización la primera vez que se crea el volumen. Si ya existía un volumen anterior y se quiere recrear la base limpia:
 
 ```bash
-cd backend
-mvn spring-boot:run
+docker compose down -v
+docker compose up -d
 ```
 
-Con variables de entorno desde el fichero `.env` (PowerShell):
+También se puede aplicar el script manualmente si el contenedor ya existe:
 
 ```powershell
-Get-Content ..\.env | ForEach-Object {
-  if ($_ -match '^([^#=]+)=(.+)$') { $env:($matches[1]) = $matches[2] }
-}
-cd backend
-mvn spring-boot:run
+Get-Content database/schema/01_init.sql | docker exec -i postgres-2DAM-V psql -U postgres -d gamermood
 ```
 
-O bien en Linux/macOS:
+### 2. Arrancar el backend
+
+Desde la carpeta `backend`:
+
+```powershell
+cd backend
+.\mvnw.cmd spring-boot:run
+```
+
+En Linux o macOS:
 
 ```bash
-export $(grep -v '^#' .env | xargs)
 cd backend
-mvn spring-boot:run
+./mvnw spring-boot:run
 ```
 
-Verificar que arrancó:
+Comprobación rápida:
 
-```
+```text
 http://localhost:8081/api/health
 ```
 
-### Paso 4 — Arrancar el frontend
+En local el perfil `dev` usa `spring.jpa.hibernate.ddl-auto=validate`, por lo que Hibernate valida que las entidades coincidan con el esquema de PostgreSQL al arrancar.
+
+### 3. Arrancar el frontend
+
+Desde la carpeta `frontend`:
 
 ```bash
 cd frontend
@@ -184,95 +143,142 @@ npm install
 npm start
 ```
 
-La aplicación estará disponible en http://localhost:4200.
+La aplicación queda disponible en:
 
----
+```text
+http://localhost:4200
+```
 
-## Flujo completo de arranque (resumen)
+## Endpoints principales
+
+| Método | Endpoint | Uso |
+| --- | --- | --- |
+| `GET` | `/api/health` | Comprobar que el backend responde. |
+| `POST` | `/api/auth/register` | Registrar un usuario. |
+| `POST` | `/api/auth/login` | Iniciar sesión y recibir tokens JWT. |
+| `POST` | `/api/auth/refresh` | Renovar el token de acceso. |
+| `POST` | `/api/sessions` | Crear una sesión de juego. |
+| `GET` | `/api/sessions` | Listar sesiones del usuario autenticado. |
+| `GET` | `/api/sessions/{id}` | Consultar una sesión propia. |
+| `DELETE` | `/api/sessions/{id}` | Eliminar una sesión propia. |
+| `POST` | `/api/recommendations/{sesionId}` | Obtener o generar recomendación. |
+| `POST` | `/api/recommendations/{sesionId}/retry` | Regenerar recomendación. |
+| `POST` | `/api/feedback/{recomendacionId}` | Guardar feedback sobre una recomendación. |
+
+Los endpoints privados necesitan la cabecera:
+
+```text
+Authorization: Bearer <token>
+```
+
+## Sistema de recomendaciones
+
+Durante el desarrollo se dejó preparada una integración opcional con OpenAI (`OpenAiService`), pero no se utiliza en la entrega final porque requiere facturación. Por ese motivo `OPENAI_API_KEY` queda vacío en el entorno local.
+
+El funcionamiento real del proyecto es:
+
+1. El usuario crea una sesión indicando juego, estado de ánimo, intensidad y experiencia.
+2. El frontend solicita la recomendación al backend.
+3. El backend intenta usar OpenAI solo si hay clave configurada.
+4. Como la clave está vacía, se usa el sistema interno de reglas.
+5. La recomendación se guarda en PostgreSQL con fuente `REGLAS`.
+
+Así el proyecto funciona sin depender de servicios externos.
+
+## Estructura del repositorio
+
+```text
+gamermood-tfg/
+├── backend/
+│   ├── src/main/java/com/gamermood/backend/
+│   │   ├── config/          # Configuración general y CORS
+│   │   ├── controller/      # Controladores REST
+│   │   ├── dto/             # Objetos de entrada y salida de la API
+│   │   ├── entity/          # Entidades JPA
+│   │   ├── exception/       # Excepciones y manejador global
+│   │   ├── repository/      # Repositorios Spring Data
+│   │   ├── security/        # JWT, filtros y configuración de seguridad
+│   │   └── service/         # Lógica de aplicación
+│   └── src/main/resources/  # application.yaml y perfiles
+├── database/
+│   └── schema/              # Script SQL inicial
+├── docs/
+│   ├── actas/               # Actas y documentación interna del equipo
+│   └── estructura-memoria-tfg.md
+├── frontend/
+│   ├── public/
+│   └── src/app/
+│       ├── components/      # Pantallas de la aplicación
+│       ├── guards/          # Protección de rutas privadas
+│       ├── interceptors/    # Interceptor para añadir JWT
+│       ├── models/          # Interfaces TypeScript
+│       └── services/        # Servicios de API y autenticación
+├── docker-compose.yml
+├── .env.example
+└── README.md
+```
+
+## Comandos útiles
+
+Backend:
+
+```powershell
+cd backend
+.\mvnw.cmd test
+.\mvnw.cmd spring-boot:run
+```
+
+Frontend:
 
 ```bash
-# 1. Base de datos
-docker compose up -d
-
-# 2. Backend (en una terminal separada)
-cd backend
-mvn spring-boot:run
-
-# 3. Frontend (en otra terminal)
 cd frontend
-npm install   # solo la primera vez o tras cambios en package.json
+npm test
+npm run build
 npm start
 ```
 
----
+Docker:
 
-## Equipo
-
-| Rol | Responsabilidad |
-|-----|----------------|
-| Integrante 1 | Backend y seguridad (Spring Boot, JWT) |
-| Integrante 2 | Base de datos y lógica de dominio |
-| Integrante 3 | Frontend e integración (Angular) |
-
----
-
-## Flujo de ramas Git
-
-| Rama | Propósito |
-|------|-----------|
-| `main` | Versión estable |
-| `develop` | Integración continua |
-| `feature/*` | Desarrollo de funcionalidades |
-
----
+```bash
+docker compose up -d
+docker compose ps
+docker compose logs postgres
+docker compose down
+```
 
 ## Troubleshooting
 
-### Docker no arranca
+Si PostgreSQL no arranca, suele ser porque Docker no está iniciado o porque el puerto `5432` ya lo está usando otra instalación local de PostgreSQL. En ese caso se puede cambiar `DB_PORT` en `.env`.
 
-- Asegurarse de que Docker Desktop está en ejecución.
-- Verificar que el puerto 5432 no está ocupado:
-  ```bash
-  # Windows
-  netstat -ano | findstr :5432
-  # Linux/macOS
-  lsof -i :5432
-  ```
-- Si el puerto está ocupado, detener el servicio PostgreSQL local o cambiar el puerto en `docker-compose.yml`.
-
-### El backend no conecta con la base de datos
-
-- Comprobar que el contenedor de PostgreSQL está corriendo: `docker compose ps`
-- Verificar que las credenciales en `.env` coinciden con las del `docker-compose.yml`.
-- Revisar el log del backend para ver el mensaje de error de conexión exacto.
-
-### El backend arranca pero devuelve errores de esquema o faltan datos
-
-- En perfil `dev` (por defecto) Hibernate usa `ddl-auto: update`: crea/actualiza las tablas automáticamente, pero **no inserta los datos de referencia** (roles, categorías, estados).
-- Ejecutar `01_init.sql` tal y como se describe en el Paso 2 para sembrar esos datos iniciales.
-- Si el script falla por claves duplicadas, los datos ya están presentes y puedes ignorar el error.
-
-### npm install falla
-
-- Comprobar la versión de Node.js: `node -v` (mínimo v22 LTS).
-- Borrar `node_modules` y `package-lock.json` y volver a instalar:
-  ```bash
-  rm -rf node_modules package-lock.json
-  npm install
-  ```
-
-### El frontend no puede conectar con el backend (CORS)
-
-- Comprobar que el backend está corriendo en el puerto 8081.
-- El backend tiene CORS configurado para `http://localhost:4200`. Si el frontend corre en otro puerto, ajustar la variable `CORS_ALLOWED_ORIGINS` en `.env`.
-
-### Error `Port 4200 is already in use`
+Si el backend falla al arrancar con errores de validación de Hibernate, normalmente el esquema real de la base no coincide con `database/schema/01_init.sql`. Para un entorno limpio, lo más directo es recrear el volumen:
 
 ```bash
-ng serve --port 4201
+docker compose down -v
+docker compose up -d
 ```
 
-### El JWT no funciona o expira inesperadamente
+Si el frontend devuelve errores 401 o 403, conviene cerrar sesión y volver a entrar para renovar los tokens. También hay que comprobar que `JWT_SECRET` sea el mismo mientras el backend está en ejecución.
 
-- Comprobar que `JWT_SECRET` en `.env` tiene al menos 64 caracteres.
-- El token de acceso expira en 24 h y el de refresco en 7 días (configurado en `application.yaml`).
+Si el frontend no conecta con la API, revisar que el backend esté levantado en `8081` y que `CORS_ALLOWED_ORIGINS` incluya `http://localhost:4200`.
+
+Si `npm install` falla, revisar la versión de Node. El proyecto se ha trabajado con Node 22 y npm 11.
+
+## Estado de pruebas
+
+Comandos usados para comprobar el proyecto:
+
+```powershell
+cd backend
+.\mvnw.cmd test
+```
+
+```bash
+cd frontend
+npm test
+```
+
+También se puede lanzar el build del frontend con:
+
+```bash
+npm run build
+```

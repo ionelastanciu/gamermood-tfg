@@ -23,10 +23,6 @@ public class EstadoSesionService {
         this.sessionRepository = sessionRepository;
     }
 
-    /**
-     * Registra una transición de estado para una sesión.
-     * Obtiene el estado actual como estado anterior antes de guardar el nuevo.
-     */
     @Transactional
     public TransicionEstado avanzar(Long sesionId, EstadoSesion nuevoEstado, String motivo) {
         GameSession sesion = sessionRepository.findById(sesionId)
@@ -43,19 +39,12 @@ public class EstadoSesionService {
         return transicionRepository.save(transicion);
     }
 
-    /**
-     * Devuelve el estado actual de la sesión (el de la última transición).
-     * Si no hay transiciones, devuelve SESSION_CREATED como estado inicial.
-     */
     public EstadoSesion obtenerEstadoActual(Long sesionId) {
         return transicionRepository.findTopBySesionIdOrderByCreatedAtDesc(sesionId)
                 .map(TransicionEstado::getEstadoNuevo)
                 .orElse(EstadoSesion.SESSION_CREATED);
     }
 
-    /**
-     * Devuelve el historial completo de transiciones de una sesión.
-     */
     public List<TransicionEstado> obtenerHistorial(Long sesionId) {
         return transicionRepository.findBySesionIdOrderByCreatedAtAsc(sesionId);
     }

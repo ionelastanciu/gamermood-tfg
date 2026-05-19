@@ -12,6 +12,5 @@ public interface TransicionEstadoRepository extends JpaRepository<TransicionEsta
 
     List<TransicionEstado> findBySesionIdOrderByCreatedAtAsc(Long sesionId);
 
-    // Devuelve la última transición de una sesión para saber el estado actual
     Optional<TransicionEstado> findTopBySesionIdOrderByCreatedAtDesc(Long sesionId);
 }

@@ -1,7 +1,7 @@
 export interface SessionRequest {
   game: string;
   mood: 'happy' | 'neutral' | 'sad';
-  intensity: number;   // 1–10
+  intensity: number;
   experience: string;
 }
 
@@ -11,5 +11,5 @@ export interface SessionResponse {
   mood: string;
   intensity: number;
   experience: string;
-  createdAt: string;   // ISO 8601
+  createdAt: string;
 }

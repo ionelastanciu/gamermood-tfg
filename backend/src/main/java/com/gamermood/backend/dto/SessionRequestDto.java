@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record SessionRequestDto(
     @NotBlank String game,
-    @NotBlank String mood,            // "happy" | "neutral" | "sad"
+    @NotBlank String mood,
     @NotNull @Min(1) @Max(10) Integer intensity,
     String experience
 ) {}

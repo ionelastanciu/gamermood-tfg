@@ -13,8 +13,6 @@ export class SessionService {
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 
-  // --- Fallback local (sin backend) ---
-
   saveLocalSession(data: SessionRequest): void {
     localStorage.setItem(SESSION_KEY, JSON.stringify(data));
   }
@@ -30,7 +28,6 @@ export class SessionService {
   }
 
   createSession(body: SessionRequest): Observable<SessionResponse> {
-    // TODO: endpoint POST /api/sessions (pendiente de backend)
     return this.http.post<SessionResponse>(`${API}/sessions`, body, { headers: this.headers() });
   }
 

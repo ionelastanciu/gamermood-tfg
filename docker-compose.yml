@@ -1,20 +1,19 @@
-version: '3.9'
-
 services:
   postgres:
     image: postgres:17
     container_name: postgres-2DAM-V
     restart: always
     environment:
-      POSTGRES_DB: gamermood
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${DB_NAME:-gamermood}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./database/schema/01_init.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d gamermood"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-gamermood}"]
       interval: 10s
       timeout: 5s
       retries: 5

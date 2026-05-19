@@ -35,6 +35,7 @@ public class FeedbackService {
         feedback.setRecomendacion(recomendacion);
         feedback.setUtil(dto.util());
         feedback.setComentario(dto.comentario());
+        recomendacion.setFeedback(feedback);
 
         FeedbackRecomendacion guardado = feedbackRepository.save(feedback);
         return toDto(guardado);

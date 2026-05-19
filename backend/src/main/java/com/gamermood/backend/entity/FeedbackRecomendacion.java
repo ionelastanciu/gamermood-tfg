@@ -15,7 +15,6 @@ public class FeedbackRecomendacion {
     @JoinColumn(name = "recomendacion_id", nullable = false, unique = true)
     private Recomendacion recomendacion;
 
-    // true = "Me ha servido", false = "No me ha servido"
     @Column(nullable = false)
     private boolean util;
 
@@ -30,13 +29,35 @@ public class FeedbackRecomendacion {
         createdAt = LocalDateTime.now();
     }
 
-    // Getters y setters
-    public Long getId() { return id; }
-    public Recomendacion getRecomendacion() { return recomendacion; }
-    public void setRecomendacion(Recomendacion recomendacion) { this.recomendacion = recomendacion; }
-    public boolean isUtil() { return util; }
-    public void setUtil(boolean util) { this.util = util; }
-    public String getComentario() { return comentario; }
-    public void setComentario(String comentario) { this.comentario = comentario; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public Long getId() {
+        return id;
+    }
+
+    public Recomendacion getRecomendacion() {
+        return recomendacion;
+    }
+
+    public void setRecomendacion(Recomendacion recomendacion) {
+        this.recomendacion = recomendacion;
+    }
+
+    public boolean isUtil() {
+        return util;
+    }
+
+    public void setUtil(boolean util) {
+        this.util = util;
+    }
+
+    public String getComentario() {
+        return comentario;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 }
