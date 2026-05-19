@@ -1,6 +1,6 @@
 # Reparto inicial de responsabilidades
 
-## Persona 1 - Backend y seguridad
+## Mario - Backend y seguridad
 Responsable de:
 - Spring Boot
 - estructura base de la API REST
@@ -10,9 +10,9 @@ Responsable de:
 - controladores y servicios
 - manejo de errores
 - configuración segura y variables de entorno
-- soporte a integración OpenAI
+- soporte a integración Groq
 
-## Persona 2 - Base de datos y lógica de dominio
+## Florin - Base de datos y lógica de dominio
 Responsable de:
 - modelo relacional PostgreSQL
 - entidades JPA/Hibernate
@@ -22,7 +22,7 @@ Responsable de:
 - feedback
 - trazabilidad del flujo
 
-## Persona 3 - Frontend e integración
+## Daniela - Frontend e integración
 Responsable de:
 - Angular
 - formularios
@@ -34,7 +34,3 @@ Responsable de:
 - historial
 - pantalla de recomendaciones conectada a API real
 
-## Criterio de trabajo
-Cada integrante trabaja sobre ramas feature.
-La integración se realiza en develop.
-La rama main solo contendrá versiones estables.

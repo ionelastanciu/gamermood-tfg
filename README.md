@@ -64,9 +64,14 @@ Variables usadas:
 | `DB_PASSWORD` | Contraseña de PostgreSQL. |
 | `JWT_SECRET` | Clave usada para firmar los tokens JWT. Debe ser larga y privada. |
 | `CORS_ALLOWED_ORIGINS` | Origen permitido para el frontend. En local, `http://localhost:4200`. |
-| `OPENAI_API_KEY` | Opcional. En la entrega final se deja vacío. |
+| `GROQ_API_KEY` | Opcional. Si se configura, el backend intenta generar recomendaciones con Groq. |
+| `GROQ_API_URL` | Endpoint de Groq compatible con Chat Completions. |
+| `GROQ_MODEL` | Modelo utilizado para generar recomendaciones. |
+| `GROQ_MAX_TOKENS` | Límite de tokens de la respuesta. |
 
 No se deben subir secretos reales al repositorio.
+
+El backend carga automáticamente el `.env` de la raíz del proyecto o de la carpeta `backend/`, por lo que no hace falta exportar las variables manualmente si se arranca con el Maven Wrapper.
 
 ## Puertos
 
@@ -173,17 +178,32 @@ Authorization: Bearer <token>
 
 ## Sistema de recomendaciones
 
-Durante el desarrollo se dejó preparada una integración opcional con OpenAI (`OpenAiService`), pero no se utiliza en la entrega final porque requiere facturación. Por ese motivo `OPENAI_API_KEY` queda vacío en el entorno local.
+El backend genera recomendaciones de dos formas:
 
-El funcionamiento real del proyecto es:
+1. Si `GROQ_API_KEY` está configurada, llama a Groq mediante el endpoint `https://api.groq.com/openai/v1/chat/completions`.
+2. Si la clave está vacía o Groq devuelve error, usa el sistema interno de reglas.
+
+La palabra `openai` aparece en la URL porque Groq ofrece un endpoint compatible con Chat Completions. El proveedor usado por el proyecto es Groq.
+
+El modelo configurado por defecto es `llama-3.3-70b-versatile`, aunque se puede cambiar con `GROQ_MODEL`.
+
+Flujo real:
 
 1. El usuario crea una sesión indicando juego, estado de ánimo, intensidad y experiencia.
 2. El frontend solicita la recomendación al backend.
-3. El backend intenta usar OpenAI solo si hay clave configurada.
-4. Como la clave está vacía, se usa el sistema interno de reglas.
-5. La recomendación se guarda en PostgreSQL con fuente `REGLAS`.
+3. El backend intenta generar el texto con `GroqService`.
+4. Si Groq responde bien, la recomendación se guarda con fuente `GROQ`.
+5. Si no hay clave o falla la llamada externa, se guarda una recomendación con fuente `REGLAS`.
 
-Así el proyecto funciona sin depender de servicios externos.
+Así el proyecto puede funcionar sin servicios externos, pero cualquier integrante puede activar la IA añadiendo su propia clave de Groq en `.env`.
+
+## Roles y seguridad
+
+Aunque en la aplicación solo se usa `ROLE_USER`, el backend mantiene la entidad `Role` y la tabla `usuarios_roles`. Esto deja preparada la seguridad para trabajar con más permisos sin cambiar el modelo de usuarios.
+
+Cuando un usuario se registra, `AuthServiceImpl` le asigna `ROLE_USER`. Después, `UserDetailsServiceImpl` carga esos roles y Spring Security los convierte en authorities. Al iniciar sesión, los roles también se incluyen en el JWT, de forma que el frontend recibe la información básica del usuario autenticado.
+
+Mantener la relación `User` - `Role` como `ManyToMany` tiene sentido porque es una estructura habitual en seguridad: un usuario puede tener varios roles y un mismo rol puede pertenecer a muchos usuarios. En esta versión solo se usa el rol de usuario normal, pero el diseño no obliga a rehacer la autenticación si más adelante se añade un rol administrador.
 
 ## Estructura del repositorio
 

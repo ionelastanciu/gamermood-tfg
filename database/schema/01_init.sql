@@ -1,6 +1,6 @@
 -- =============================================================
 -- GamerMood - esquema inicial PostgreSQL
--- Fuente de verdad alineada con las entidades JPA actuales.
+-- Alineada con las entidades JPA.
 -- Este script se ejecuta automáticamente solo cuando el volumen
 -- de PostgreSQL se crea por primera vez.
 -- =============================================================
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS recomendaciones (
     CONSTRAINT fk_recomendaciones_sesion
         FOREIGN KEY (sesion_id) REFERENCES sesiones_juego(id) ON DELETE CASCADE,
     CONSTRAINT chk_recomendaciones_fuente
-        CHECK (fuente IN ('REGLAS', 'OPENAI'))
+        CHECK (fuente IN ('REGLAS', 'GROQ'))
 );
 
 CREATE INDEX IF NOT EXISTS idx_recomendaciones_sesion
@@ -112,6 +112,17 @@ BEGIN
         ADD CONSTRAINT fk_sesiones_usuario
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE;
 END $$;
+
+ALTER TABLE recomendaciones
+    DROP CONSTRAINT IF EXISTS chk_recomendaciones_fuente;
+
+UPDATE recomendaciones
+SET fuente = 'REGLAS'
+WHERE fuente NOT IN ('REGLAS', 'GROQ');
+
+ALTER TABLE recomendaciones
+    ADD CONSTRAINT chk_recomendaciones_fuente
+    CHECK (fuente IN ('REGLAS', 'GROQ'));
 
 DO $$
 DECLARE constraint_name text;

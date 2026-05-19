@@ -14,16 +14,16 @@ public class RecomendacionService {
 
     private final RecomendacionRepository recomendacionRepository;
     private final SessionRepository sessionRepository;
-    private final OpenAiService openAiService;
+    private final GroqService groqService;
 
     public RecomendacionService(
             RecomendacionRepository recomendacionRepository,
             SessionRepository sessionRepository,
-            OpenAiService openAiService
+            GroqService groqService
     ) {
         this.recomendacionRepository = recomendacionRepository;
         this.sessionRepository = sessionRepository;
-        this.openAiService = openAiService;
+        this.groqService = groqService;
     }
 
     @Transactional
@@ -37,14 +37,14 @@ public class RecomendacionService {
                 .map(this::toDto)
                 .orElseGet(() -> {
 
-                    String texto = openAiService.generarRecomendacion(
+                    String texto = groqService.generarRecomendacion(
                             sesion.getGame(),
                             sesion.getMood(),
                             sesion.getIntensity(),
                             sesion.getExperience()
                     );
 
-                    String fuente = texto != null ? "OPENAI" : "REGLAS";
+                    String fuente = texto != null ? "GROQ" : "REGLAS";
 
                     if (texto == null) {
                         texto = generarTexto(
@@ -74,14 +74,14 @@ public class RecomendacionService {
                     recomendacionRepository.delete(existente);
                 });
 
-        String texto = openAiService.generarRecomendacion(
+        String texto = groqService.generarRecomendacion(
                 sesion.getGame(),
                 sesion.getMood(),
                 sesion.getIntensity(),
                 sesion.getExperience()
         );
 
-        String fuente = texto != null ? "OPENAI" : "REGLAS";
+        String fuente = texto != null ? "GROQ" : "REGLAS";
 
         if (texto == null) {
             texto = generarTextoAlternativo(
