@@ -1,4 +1,3 @@
-/* styles.css */
 * {
     margin: 0;
     padding: 0;
@@ -273,7 +272,6 @@ a.feature-card:hover .card-link-hint {
     box-shadow: 0 0 18px rgba(194, 24, 91, 0.55), 0 0 36px rgba(123, 31, 162, 0.3);
 }
 
-/* Login Page */
 .login-container {
     min-height: 100vh;
     display: flex;
@@ -435,7 +433,6 @@ a.feature-card:hover .card-link-hint {
     transform: translateY(-1px);
 }
 
-/* Feature Info Pages (expresa-emociones, consejos-personalizados, encuentra-tu-juego) */
 .feature-page-container {
     min-height: 100vh;
     padding: 2rem;
@@ -556,7 +553,6 @@ a.feature-card:hover .card-link-hint {
     text-decoration: underline;
 }
 
-/* Session Page */
 .session-container {
     min-height: 100vh;
     padding: 2rem;
@@ -652,7 +648,6 @@ a.feature-card:hover .card-link-hint {
     transition: color 0.2s ease;
 }
 
-/* Colores en reposo */
 .mood-btn.happy   svg { color: #81c784; }
 .mood-btn.neutral svg { color: #ffd54f; }
 .mood-btn.sad     svg { color: #f87171; }
@@ -660,7 +655,6 @@ a.feature-card:hover .card-link-hint {
 .mood-btn.neutral p   { color: #ffd54f; }
 .mood-btn.sad     p   { color: #f87171; }
 
-/* Estado seleccionado — neon glow en lugar de color sólido */
 .mood-btn.selected {
     transform: translateY(-3px) scale(1.04);
 }
@@ -752,7 +746,6 @@ textarea::placeholder {
     color: rgba(255, 255, 255, 0.4);
 }
 
-/* Recommendations Page */
 .recommendations-container {
     min-height: 100vh;
     padding: 2rem;
@@ -884,12 +877,6 @@ textarea::placeholder {
     box-shadow: 0 0 18px rgba(194, 24, 91, 0.5), 0 0 30px rgba(123, 31, 162, 0.25);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   MICROANIMATIONS
-   Only opacity + transform — no layout reflow, GPU-accelerated.
-   animation-fill-mode: both → element starts invisible during delay.
-   ═══════════════════════════════════════════════════════════════ */
-
 @keyframes fade-up {
     from { opacity: 0; transform: translateY(20px); }
     to   { opacity: 1; transform: translateY(0);    }
@@ -909,7 +896,6 @@ textarea::placeholder {
 .anim-scale-in   { animation: scale-in  0.38s ease both; }
 .anim-slide-left { animation: slide-left 0.30s ease both; }
 
-/* Stagger delays */
 .anim-d1 { animation-delay:  80ms; }
 .anim-d2 { animation-delay: 160ms; }
 .anim-d3 { animation-delay: 240ms; }
@@ -927,11 +913,6 @@ textarea::placeholder {
     }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   GAMING VISUAL ELEMENTS
-   ═══════════════════════════════════════════════════════════════ */
-
-/* ── "// PRESS START //" tag (home hero) ───────────────────── */
 .press-start {
     display: block;
     font-family: 'Orbitron', sans-serif;
@@ -961,7 +942,6 @@ a.press-start:hover {
     .press-start { animation: none; }
 }
 
-/* ── Lightning bolt icon (filled SVG) ──────────────────────── */
 .icon-bolt {
     width: 0.85rem;
     height: 0.85rem;
@@ -980,7 +960,6 @@ a.press-start:hover {
     filter: drop-shadow(0 0 5px rgba(255, 215, 64, 0.7));
 }
 
-/* ── Trophy icon (dashboard title) ─────────────────────────── */
 .icon-trophy {
     width: 1.5rem;
     height: 1.5rem;
@@ -992,7 +971,6 @@ a.press-start:hover {
     flex-shrink: 0;
 }
 
-/* ── Lightning in advice section (recommendations) ─────────── */
 .icon-advice {
     width: 1.25rem;
     height: 1.25rem;
@@ -1002,7 +980,6 @@ a.press-start:hover {
     filter: drop-shadow(0 0 5px rgba(255, 215, 64, 0.8));
 }
 
-/* ── PLAY badge on game cards ───────────────────────────────── */
 .game-card-header {
     display: flex;
     align-items: flex-start;
@@ -1032,7 +1009,6 @@ a.press-start:hover {
     margin-top: 0.1rem;
 }
 
-/* ── Empty state controller SVG ────────────────────────────── */
 .empty-controller {
     width: 120px;
     height: auto;
@@ -1053,17 +1029,9 @@ a.press-start:hover {
     margin-top: -0.75rem;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   RESPONSIVE
-   Breakpoints: 768px (tablet) · 480px (mobile) · 360px (small)
-   ═══════════════════════════════════════════════════════════════ */
-
-/* ── Tablet ≤ 768px ─────────────────────────────────────────── */
 @media (max-width: 768px) {
-    /* Navbar */
     .navbar { padding: 1rem 1.25rem; }
 
-    /* Home */
     .main-content  { padding: 2.5rem 1.25rem; }
     .hero-section  { margin-bottom: 2.5rem; }
     .hero-title    { font-size: 2.2rem; }
@@ -1074,39 +1042,30 @@ a.press-start:hover {
         margin-bottom: 2.5rem;
     }
 
-    /* Login / Register */
     .login-box { padding: 1.75rem; }
 
-    /* Feature info pages */
     .feature-page-content { margin-top: 4rem; }
     .feature-page-box     { padding: 1.75rem; }
     .feature-page-header h2 { font-size: 1.65rem; }
 
-    /* Session */
     .session-content   { margin-top: 4rem; }
     .session-header    { margin-bottom: 2rem; }
     .session-header h2 { font-size: 1.65rem; }
     .session-form      { padding: 1.5rem; }
-    /* Keep 3-column mood grid, just tighten */
     .mood-btn     { padding: 1.1rem 0.5rem; }
     .mood-btn svg { width: 2.25rem; height: 2.25rem; }
 
-    /* Session & games grids: prevent overflow */
     .sessions-grid { grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); }
     .games-grid    { grid-template-columns: repeat(auto-fit,  minmax(min(250px, 100%), 1fr)); }
 
-    /* Recommendations */
     .recommendations-container { padding: 1.25rem; }
 }
 
-/* ── Mobile ≤ 480px ─────────────────────────────────────────── */
 @media (max-width: 480px) {
-    /* Navbar */
     .navbar       { padding: 0.875rem 1rem; }
     .nav-logo h1  { font-size: 1.05rem; }
     .btn-primary  { padding: 0.5rem 0.85rem; font-size: 0.8rem; gap: 0.3rem; }
 
-    /* Home */
     .main-content  { padding: 1.75rem 1rem; }
     .hero-section  { margin-bottom: 1.75rem; }
     .hero-title    { font-size: 1.7rem; }
@@ -1114,18 +1073,15 @@ a.press-start:hover {
     .feature-card  { padding: 1.5rem; }
     .btn-cta       { font-size: 0.88rem; padding: 0.8rem 1.4rem; }
 
-    /* Login / Register */
     .login-box        { padding: 1.25rem; border-radius: 1rem; }
     .login-header h2  { font-size: 1.4rem; }
     .login-header svg { width: 3rem; height: 3rem; }
 
-    /* Feature info pages */
     .feature-page-content   { margin-top: 3.5rem; }
     .feature-page-box       { padding: 1.25rem; border-radius: 1rem; }
     .feature-page-header h2 { font-size: 1.35rem; }
     .feature-page-header svg { width: 2.5rem; height: 2.5rem; }
 
-    /* Session */
     .session-container { padding: 1rem; }
     .session-content   { margin-top: 3.5rem; }
     .session-header    { margin-bottom: 1.5rem; }
@@ -1136,12 +1092,10 @@ a.press-start:hover {
     .mood-btn svg      { width: 1.9rem; height: 1.9rem; }
     .mood-btn p        { font-size: 0.75rem; }
 
-    /* Session & games grids: single column */
     .sessions-grid { grid-template-columns: 1fr; }
     .games-grid    { grid-template-columns: 1fr; }
 }
 
-/* ── Small phones ≤ 360px ───────────────────────────────────── */
 @media (max-width: 360px) {
     .hero-title   { font-size: 1.45rem; }
     .mood-btn p   { font-size: 0.68rem; letter-spacing: 0; }

@@ -91,6 +91,7 @@ export class RecommendationsComponent implements OnInit {
   feedbackSent    = false;
   feedbackUseful: boolean | null = null;
   retrying        = false;
+  loadingRecommendation = false;
 
   readonly intensitySegments = Array.from({ length: 10 }, (_, i) => i + 1);
   readonly flippedCards = new Set<number>();
@@ -104,17 +105,23 @@ export class RecommendationsComponent implements OnInit {
     const game      = state.game      ?? this.sessionService.getLocalSession()?.game      ?? '';
     const intensity = state.intensity ?? this.sessionService.getLocalSession()?.intensity ?? 5;
 
-    this.initDisplay(mood, game, intensity);
+    this.initDisplay(mood, game, intensity, !sid);
 
     if (sid) {
       this.sessionId = sid;
+      this.loadingRecommendation = true;
       this.sessionService.getRecommendation(sid).subscribe({
         next: (rec) => {
           this.recommendationId = rec.id;
           this.adviceList = this.parseRecommendations(rec.texto);
+          this.loadingRecommendation = false;
           this.cdr.detectChanges();
         },
-        error: () => { /* mantiene el mock ya cargado */ }
+        error: () => {
+          this.adviceList = this.getFallbackAdvice(this.currentMood);
+          this.loadingRecommendation = false;
+          this.cdr.detectChanges();
+        }
       });
     }
   }
@@ -122,6 +129,7 @@ export class RecommendationsComponent implements OnInit {
   retryRecommendation(): void {
     if (!this.sessionId) return;
     this.retrying = true;
+    this.loadingRecommendation = true;
     this.sessionService.retryRecommendation(this.sessionId).subscribe({
       next: (rec) => {
         this.recommendationId = rec.id;
@@ -129,21 +137,30 @@ export class RecommendationsComponent implements OnInit {
         this.feedbackSent     = false;
         this.feedbackUseful   = null;
         this.retrying         = false;
+        this.loadingRecommendation = false;
         this.cdr.detectChanges();
       },
-      error: () => { this.retrying = false; this.cdr.detectChanges(); }
+      error: () => {
+        this.retrying = false;
+        this.loadingRecommendation = false;
+        this.cdr.detectChanges();
+      }
     });
   }
 
-  private initDisplay(mood: string, game: string, intensity: number): void {
+  private initDisplay(mood: string, game: string, intensity: number, showFallbackAdvice = true): void {
     this.currentMood      = mood;
     this.sessionGame      = game;
     this.sessionIntensity = intensity;
     this.moodLabel        = MOOD_LABELS[mood]    ?? 'NORMAL';
     this.resultTag        = RESULT_TAGS[mood]     ?? RESULT_TAGS['neutral'];
     this.moodMessage      = MOOD_MESSAGES[mood]   ?? MOOD_MESSAGES['neutral'];
-    this.adviceList       = MOCK_ADVICE[mood]     ?? MOCK_ADVICE['neutral'];
+    this.adviceList       = showFallbackAdvice ? this.getFallbackAdvice(mood) : [];
     this.gamesList        = MOCK_GAMES[mood]      ?? MOCK_GAMES['neutral'];
+  }
+
+  private getFallbackAdvice(mood: string): string[] {
+    return MOCK_ADVICE[mood] ?? MOCK_ADVICE['neutral'];
   }
 
   private parseRecommendations(texto: string): string[] {

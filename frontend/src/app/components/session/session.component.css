@@ -1,4 +1,3 @@
-/* ── Error banner ─────────────────────────────────────────────── */
 .session-error-banner {
   display: flex;
   align-items: center;
@@ -21,7 +20,6 @@
   80%       { transform: translateX(4px); }
 }
 
-/* ── Section label (icon + text) ─────────────────────────────── */
 .section-label {
   display: flex;
   align-items: center;
@@ -45,7 +43,6 @@
   letter-spacing: 0.02em;
 }
 
-/* ── Intensity HUD ────────────────────────────────────────────── */
 .intensity-hud {
   margin-top: 0.5rem;
 }
@@ -84,7 +81,6 @@
   font-weight: 500;
 }
 
-/* ── Barras de intensidad ─── */
 .intensity-bars {
   display: flex;
   gap: 4px;
@@ -119,7 +115,6 @@
   box-shadow: 0 0 7px rgba(255, 107, 107, 0.75);
 }
 
-/* ── Slider gaming ─── */
 .intensity-slider {
   -webkit-appearance: none;
   appearance: none;
@@ -160,7 +155,6 @@
   border: 2px solid rgba(255, 255, 255, 0.25);
 }
 
-/* ── Game select ──────────────────────────────────────────────── */
 .game-select {
   width: 100%;
   padding: 0.75rem 2.5rem 0.75rem 1rem;
@@ -217,7 +211,6 @@
 
 .game-other-input::placeholder { color: rgba(255, 255, 255, 0.35); }
 
-/* ── Inputs de texto y textarea ───────────────────────────────── */
 .form-section input[type="text"],
 .form-section textarea {
   width: 100%;
@@ -243,7 +236,6 @@
   color: rgba(255, 255, 255, 0.35);
 }
 
-/* ── Validación ───────────────────────────────────────────────── */
 .input-error {
   border-color: #f87171 !important;
   background: rgba(248, 113, 113, 0.06) !important;
@@ -256,7 +248,6 @@
   margin-top: 0.4rem;
 }
 
-/* ── Game select ──────────────────────────────────────────────── */
 .game-select {
   width: 100%;
   padding: 0.75rem 2.5rem 0.75rem 1rem;
@@ -313,7 +304,6 @@
 
 .game-other-input::placeholder { color: rgba(255, 255, 255, 0.35); }
 
-/* ── Botón submit ─────────────────────────────────────────────── */
 .btn-submit:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -321,7 +311,6 @@
   box-shadow: none !important;
 }
 
-/* ── Form actions row ─────────────────────────────────────────── */
 .form-actions {
   display: flex;
   gap: 0.75rem;
@@ -332,6 +321,14 @@
 .form-actions .btn-submit {
   flex: 1;
   margin-top: 0;
+  min-height: 2.75rem;
+  padding: 0.65rem 1.1rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: none;
 }
 
 .btn-reset {
@@ -340,6 +337,7 @@
   justify-content: center;
   gap: 0.4rem;
   padding: 0.65rem 1.1rem;
+  min-height: 2.75rem;
   background: rgba(248, 113, 113, 0.07);
   border: 1px solid rgba(248, 113, 113, 0.28);
   border-radius: 0.5rem;
@@ -347,6 +345,7 @@
   font-size: 0.72rem;
   font-family: 'Orbitron', sans-serif;
   font-weight: 600;
+  line-height: 1;
   letter-spacing: 0.06em;
   cursor: pointer;
   flex-shrink: 0;
@@ -375,7 +374,6 @@
   line-height: 1.4;
 }
 
-/* ── Responsive ───────────────────────────────────────────────── */
 @media (max-width: 480px) {
   .section-label span  { font-size: 0.9rem; }
   .intensity-digit     { font-size: 2.2rem; }

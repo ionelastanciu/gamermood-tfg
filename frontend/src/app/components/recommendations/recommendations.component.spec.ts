@@ -74,7 +74,7 @@ describe('Recommendations', () => {
   it('retryRecommendation llama al servicio y actualiza adviceList', () => {
     component.sessionId = 10;
     sessionSpy.retryRecommendation.mockReturnValue(of({
-      id: 2, sesionId: 10, texto: 'Nueva recomendación generada', fuente: 'AI', createdAt: '2024-01-01'
+      id: 2, sesionId: 10, texto: 'Nueva recomendación generada', fuente: 'GROQ', createdAt: '2024-01-01'
     }));
     component.retryRecommendation();
     expect(sessionSpy.retryRecommendation).toHaveBeenCalledWith(10);

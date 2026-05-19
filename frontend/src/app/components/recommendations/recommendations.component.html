@@ -80,7 +80,14 @@
                 </svg>
                 Consejos para ti
             </h3>
-            @if (adviceList.length > 0) {
+            @if (loadingRecommendation) {
+                <div class="section-empty">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M21 12a9 9 0 1 1-6.2-8.56"/>
+                    </svg>
+                    <p>Generando recomendación personalizada...</p>
+                </div>
+            } @else if (adviceList.length > 0) {
                 <div class="advice-items">
                     @for (advice of adviceList; track advice; let i = $index) {
                         <div class="advice-item" [style.animation-delay]="(300 + i * 70) + 'ms'">

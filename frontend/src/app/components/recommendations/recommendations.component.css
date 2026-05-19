@@ -1,11 +1,9 @@
-/* ── Content layout ─────────────────────────────────────────── */
 .rec-content {
     max-width: 56rem;
     margin: 5rem auto 0;
     padding-bottom: 4rem;
 }
 
-/* ── Result header ─────────────────────────────────────────── */
 .result-header {
     text-align: center;
     margin-bottom: 2.5rem;
@@ -26,7 +24,6 @@
 .result-tag-neutral { color: #ffd54f; text-shadow: 0 0 8px rgba(255,213,79,0.8),  0 0 16px rgba(255,213,79,0.4); }
 .result-tag-sad     { color: #f87171; text-shadow: 0 0 8px rgba(248,113,113,0.8), 0 0 16px rgba(248,113,113,0.4); }
 
-/* Trophy glow burst */
 .result-icon-wrap {
     position: relative;
     width: 5.5rem;
@@ -87,7 +84,6 @@
     line-height: 1.6;
 }
 
-/* ── Session snapshot ──────────────────────────────────────── */
 .session-snap {
     display: flex;
     align-items: center;
@@ -190,7 +186,6 @@
     white-space: nowrap;
 }
 
-/* ── Sections ──────────────────────────────────────────────── */
 .rec-section {
     background: rgba(22, 12, 55, 0.82);
     backdrop-filter: blur(12px);
@@ -222,7 +217,6 @@
     filter: drop-shadow(0 0 4px rgba(255,215,64,0.7));
 }
 
-/* ── Advice items ──────────────────────────────────────────── */
 .advice-items {
     display: flex;
     flex-direction: column;
@@ -266,12 +260,10 @@
     line-height: 1.6;
 }
 
-/* ── Game card mood accent (top border) ────────────────────── */
 .game-card-mood-happy   { border-top: 2px solid rgba(118,255,154,0.55) !important; }
 .game-card-mood-neutral { border-top: 2px solid rgba(255,213,79,0.55)  !important; }
 .game-card-mood-sad     { border-top: 2px solid rgba(248,113,113,0.55) !important; }
 
-/* ── Interactive card ──────────────────────────────────────── */
 .game-card-interactive {
     cursor: pointer;
     user-select: none;
@@ -320,12 +312,10 @@
 
 .card-desc p { margin: 0; }
 
-/* suppress hover lift when card is open */
 .card-open:hover {
     transform: none !important;
 }
 
-/* ── Section empty state ───────────────────────────────────── */
 .section-empty {
     text-align: center;
     padding: 2.5rem 1.5rem;
@@ -363,7 +353,6 @@
     text-shadow: 0 0 8px rgba(184, 79, 255, 0.5);
 }
 
-/* ── Feedback section ──────────────────────────────────────── */
 .feedback-section {
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.09);
@@ -508,7 +497,6 @@
     cursor: not-allowed;
 }
 
-/* ── Responsive ────────────────────────────────────────────── */
 @media (max-width: 640px) {
     .session-snap {
         flex-direction: column;
@@ -537,7 +525,6 @@
     .snap-game-name    { max-width: 10rem; }
 }
 
-/* ── Reduced motion ────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
     .result-tag                { animation: none; }
     .result-icon-wrap::before  { animation: none; }
