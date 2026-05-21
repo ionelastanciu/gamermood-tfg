@@ -1,27 +1,34 @@
 # GamerMood
 
-GamerMood es una aplicación web desarrollada como proyecto de TFG para registrar sesiones de juego y relacionarlas con el estado de ánimo del usuario. La idea es sencilla: después de jugar, el usuario guarda cómo se ha sentido, la intensidad de la sesión y una breve experiencia; a partir de esos datos, el sistema genera una recomendación para la siguiente partida.
+GamerMood es una aplicación web desarrollada como proyecto de TFG para registrar sesiones de juego y relacionarlas con el estado de ánimo del usuario.
 
-El proyecto está dividido en frontend, backend y base de datos. La autenticación se hace con JWT y la persistencia con PostgreSQL.
+La idea es bastante simple: después de jugar, el usuario guarda el juego, cómo se ha sentido, la intensidad de la sesión y una breve experiencia. Con esa información, el sistema genera una recomendación para la siguiente partida. No es una herramienta médica ni intenta diagnosticar nada; está pensada como una pequeña ayuda para reflexionar sobre hábitos de juego.
 
-## Tecnologías usadas
+El proyecto está separado en tres partes:
 
-| Parte | Tecnología |
+- `frontend`: aplicación Angular.
+- `backend`: API REST con Spring Boot.
+- `database`: script SQL inicial para PostgreSQL.
+
+La autenticación se hace con JWT, la base de datos es PostgreSQL y el entorno local usa Docker Compose para levantar la base de datos.
+
+## Tecnologías
+
+| Parte | Tecnologías |
 | --- | --- |
 | Frontend | Angular 21, TypeScript 5.9, RxJS |
-| Backend | Java 17, Spring Boot 3.5.13, Spring Security, Spring Data JPA |
-| Seguridad | JWT con JJWT 0.12.6 |
-| Base de datos | PostgreSQL 17 |
+| Backend | Java 17, Spring Boot 3.5.13 |
+| Seguridad | Spring Security, JWT, JJWT 0.12.6 |
+| Persistencia | PostgreSQL 17, Spring Data JPA, Hibernate |
 | Entorno local | Docker Compose |
-| Tests frontend | Vitest / Angular test builder |
-| Build backend | Maven Wrapper |
+| Pruebas | Vitest en frontend, Maven Wrapper en backend |
 
 ## Requisitos
 
-Para levantar el proyecto en local hace falta tener instalado:
+Para ejecutar el proyecto en local hace falta:
 
 - Java JDK 17
-- Node.js 22 o compatible con Angular 21
+- Node.js 22 o una versión compatible con Angular 21
 - npm 11
 - Docker Desktop o Docker Engine con Docker Compose
 
@@ -35,11 +42,13 @@ docker --version
 docker compose version
 ```
 
-No es necesario instalar Maven manualmente porque el backend incluye `mvnw` y `mvnw.cmd`.
+No hace falta instalar Maven manualmente. El backend incluye `mvnw` y `mvnw.cmd`.
 
 ## Variables de entorno
 
-El repositorio incluye `.env.example`. Para trabajar en local se puede crear el archivo `.env` desde esa plantilla:
+El repositorio incluye `.env.example`. Para trabajar en local, se puede crear un `.env` a partir de esa plantilla.
+
+En Windows:
 
 ```powershell
 Copy-Item .env.example .env
@@ -53,25 +62,25 @@ cp .env.example .env
 
 Variables usadas:
 
-| Variable | Descripción |
+| Variable | Uso |
 | --- | --- |
 | `SPRING_PROFILES_ACTIVE` | Perfil de Spring. En local se usa `dev`. |
-| `SERVER_PORT` | Puerto del backend. Por defecto `8081`. |
+| `SERVER_PORT` | Puerto del backend. Por defecto, `8081`. |
 | `DB_HOST` | Host de PostgreSQL. En local, `localhost`. |
-| `DB_PORT` | Puerto publicado de PostgreSQL. Por defecto `5432`. |
+| `DB_PORT` | Puerto de PostgreSQL. Por defecto, `5432`. |
 | `DB_NAME` | Nombre de la base de datos. |
 | `DB_USER` | Usuario de PostgreSQL. |
 | `DB_PASSWORD` | Contraseña de PostgreSQL. |
-| `JWT_SECRET` | Clave usada para firmar los tokens JWT. Debe ser larga y privada. |
+| `JWT_SECRET` | Clave para firmar los JWT. Debe ser larga y privada. |
 | `CORS_ALLOWED_ORIGINS` | Origen permitido para el frontend. En local, `http://localhost:4200`. |
-| `GROQ_API_KEY` | Opcional. Si se configura, el backend intenta generar recomendaciones con Groq. |
+| `GROQ_API_KEY` | Clave opcional para generar recomendaciones con Groq. |
 | `GROQ_API_URL` | Endpoint de Groq compatible con Chat Completions. |
-| `GROQ_MODEL` | Modelo utilizado para generar recomendaciones. |
+| `GROQ_MODEL` | Modelo usado para generar recomendaciones. |
 | `GROQ_MAX_TOKENS` | Límite de tokens de la respuesta. |
 
-No se deben subir secretos reales al repositorio.
+No se debe subir nunca el `.env` real al repositorio.
 
-El backend carga automáticamente el `.env` de la raíz del proyecto o de la carpeta `backend/`, por lo que no hace falta exportar las variables manualmente si se arranca con el Maven Wrapper.
+El backend carga automáticamente el `.env` de la raíz del proyecto o de la carpeta `backend/`, así que normalmente no hace falta exportar variables manualmente.
 
 ## Puertos
 
@@ -81,42 +90,36 @@ El backend carga automáticamente el `.env` de la raíz del proyecto o de la car
 | Backend | 8081 | `http://localhost:8081/api` |
 | PostgreSQL | 5432 | `localhost:5432` |
 
-El backend tiene configurado el context path `/api`, así que todos los endpoints empiezan por `http://localhost:8081/api`.
+El backend tiene configurado el prefijo `/api`, por eso los endpoints empiezan por `http://localhost:8081/api`.
 
-## Arranque del proyecto
+## Arranque en local
 
 ### 1. Levantar PostgreSQL
 
-Desde la raíz del repositorio:
+Desde la raíz del proyecto:
 
 ```bash
 docker compose up -d
 ```
 
-Comprobar el estado:
+Comprobar que el contenedor está funcionando:
 
 ```bash
 docker compose ps
 ```
 
-El servicio de PostgreSQL usa la imagen `postgres:17` y monta el script `database/schema/01_init.sql` para crear el esquema inicial.
+PostgreSQL usa la imagen `postgres:17`. El esquema inicial está en `database/schema/01_init.sql`.
 
-Importante: PostgreSQL solo ejecuta los scripts de inicialización la primera vez que se crea el volumen. Si ya existía un volumen anterior y se quiere recrear la base limpia:
+Hay que tener en cuenta una cosa importante: los scripts de inicialización de PostgreSQL solo se ejecutan la primera vez que se crea el volumen. Si se cambia el SQL y ya existía un volumen anterior, lo más limpio es recrearlo:
 
 ```bash
 docker compose down -v
 docker compose up -d
 ```
 
-También se puede aplicar el script manualmente si el contenedor ya existe:
-
-```powershell
-Get-Content database/schema/01_init.sql | docker exec -i postgres-2DAM-V psql -U postgres -d gamermood
-```
-
 ### 2. Arrancar el backend
 
-Desde la carpeta `backend`:
+En Windows:
 
 ```powershell
 cd backend
@@ -136,11 +139,9 @@ Comprobación rápida:
 http://localhost:8081/api/health
 ```
 
-En local el perfil `dev` usa `spring.jpa.hibernate.ddl-auto=validate`, por lo que Hibernate valida que las entidades coincidan con el esquema de PostgreSQL al arrancar.
+En el perfil `dev`, Hibernate usa `ddl-auto=validate`. Esto hace que el backend valide el esquema real de PostgreSQL al arrancar, sin modificar tablas automáticamente.
 
 ### 3. Arrancar el frontend
-
-Desde la carpeta `frontend`:
 
 ```bash
 cd frontend
@@ -154,85 +155,81 @@ La aplicación queda disponible en:
 http://localhost:4200
 ```
 
-## Endpoints principales
+## Recomendaciones e IA
 
-| Método | Endpoint | Uso |
-| --- | --- | --- |
-| `GET` | `/api/health` | Comprobar que el backend responde. |
-| `POST` | `/api/auth/register` | Registrar un usuario. |
-| `POST` | `/api/auth/login` | Iniciar sesión y recibir tokens JWT. |
-| `POST` | `/api/auth/refresh` | Renovar el token de acceso. |
-| `POST` | `/api/sessions` | Crear una sesión de juego. |
-| `GET` | `/api/sessions` | Listar sesiones del usuario autenticado. |
-| `GET` | `/api/sessions/{id}` | Consultar una sesión propia. |
-| `DELETE` | `/api/sessions/{id}` | Eliminar una sesión propia. |
-| `POST` | `/api/recommendations/{sesionId}` | Obtener o generar recomendación. |
-| `POST` | `/api/recommendations/{sesionId}/retry` | Regenerar recomendación. |
-| `POST` | `/api/feedback/{recomendacionId}` | Guardar feedback sobre una recomendación. |
+El sistema de recomendaciones funciona de dos formas:
 
-Los endpoints privados necesitan la cabecera:
+1. Si `GROQ_API_KEY` está configurada, el backend llama a Groq desde `GroqService`.
+2. Si no hay clave o Groq devuelve error, el backend usa recomendaciones internas por reglas.
+
+La fuente queda guardada en base de datos como:
+
+- `GROQ`, si la recomendación viene de Groq.
+- `REGLAS`, si se ha usado el fallback interno.
+
+El endpoint configurado por defecto es:
+
+```text
+https://api.groq.com/openai/v1/chat/completions
+```
+
+Aunque la URL contiene `openai`, el proveedor usado en el proyecto final es Groq. Esa ruta existe porque Groq ofrece compatibilidad con el formato de Chat Completions.
+
+OpenAI no forma parte del estado final del proyecto.
+
+## Seguridad
+
+El login devuelve un token JWT y un refresh token. El frontend guarda el token y lo envía en las peticiones privadas mediante la cabecera:
 
 ```text
 Authorization: Bearer <token>
 ```
 
-## Sistema de recomendaciones
+En backend, `JwtAuthenticationFilter` valida el token y Spring Security protege los endpoints privados.
 
-El backend genera recomendaciones de dos formas:
+Aunque ahora solo se usa `ROLE_USER`, existen la entidad `Role` y la tabla `usuarios_roles`. Se mantienen porque encajan con Spring Security y dejan el sistema preparado para añadir más roles sin cambiar el modelo principal de usuarios.
 
-1. Si `GROQ_API_KEY` está configurada, llama a Groq mediante el endpoint `https://api.groq.com/openai/v1/chat/completions`.
-2. Si la clave está vacía o Groq devuelve error, usa el sistema interno de reglas.
+## Endpoints principales
 
-La palabra `openai` aparece en la URL porque Groq ofrece un endpoint compatible con Chat Completions. El proveedor usado por el proyecto es Groq.
+| Método | Endpoint | Uso |
+| --- | --- | --- |
+| `GET` | `/api/health` | Comprueba que el backend responde. |
+| `POST` | `/api/auth/register` | Registra un usuario. |
+| `POST` | `/api/auth/login` | Inicia sesión. |
+| `POST` | `/api/auth/refresh` | Renueva el token de acceso. |
+| `POST` | `/api/sessions` | Crea una sesión de juego. |
+| `GET` | `/api/sessions` | Lista las sesiones del usuario autenticado. |
+| `GET` | `/api/sessions/{id}` | Consulta una sesión propia. |
+| `DELETE` | `/api/sessions/{id}` | Elimina una sesión propia. |
+| `POST` | `/api/recommendations/{sesionId}` | Obtiene o genera una recomendación. |
+| `POST` | `/api/recommendations/{sesionId}/retry` | Regenera una recomendación. |
+| `POST` | `/api/feedback/{recomendacionId}` | Guarda feedback sobre una recomendación. |
 
-El modelo configurado por defecto es `llama-3.3-70b-versatile`, aunque se puede cambiar con `GROQ_MODEL`.
-
-Flujo real:
-
-1. El usuario crea una sesión indicando juego, estado de ánimo, intensidad y experiencia.
-2. El frontend solicita la recomendación al backend.
-3. El backend intenta generar el texto con `GroqService`.
-4. Si Groq responde bien, la recomendación se guarda con fuente `GROQ`.
-5. Si no hay clave o falla la llamada externa, se guarda una recomendación con fuente `REGLAS`.
-
-Así el proyecto puede funcionar sin servicios externos, pero cualquier integrante puede activar la IA añadiendo su propia clave de Groq en `.env`.
-
-## Roles y seguridad
-
-Aunque en la aplicación solo se usa `ROLE_USER`, el backend mantiene la entidad `Role` y la tabla `usuarios_roles`. Esto deja preparada la seguridad para trabajar con más permisos sin cambiar el modelo de usuarios.
-
-Cuando un usuario se registra, `AuthServiceImpl` le asigna `ROLE_USER`. Después, `UserDetailsServiceImpl` carga esos roles y Spring Security los convierte en authorities. Al iniciar sesión, los roles también se incluyen en el JWT, de forma que el frontend recibe la información básica del usuario autenticado.
-
-Mantener la relación `User` - `Role` como `ManyToMany` tiene sentido porque es una estructura habitual en seguridad: un usuario puede tener varios roles y un mismo rol puede pertenecer a muchos usuarios. En esta versión solo se usa el rol de usuario normal, pero el diseño no obliga a rehacer la autenticación si más adelante se añade un rol administrador.
-
-## Estructura del repositorio
+## Estructura del proyecto
 
 ```text
 gamermood-tfg/
 ├── backend/
-│   ├── src/main/java/com/gamermood/backend/
-│   │   ├── config/          # Configuración general y CORS
-│   │   ├── controller/      # Controladores REST
-│   │   ├── dto/             # Objetos de entrada y salida de la API
-│   │   ├── entity/          # Entidades JPA
-│   │   ├── exception/       # Excepciones y manejador global
-│   │   ├── repository/      # Repositorios Spring Data
-│   │   ├── security/        # JWT, filtros y configuración de seguridad
-│   │   └── service/         # Lógica de aplicación
-│   └── src/main/resources/  # application.yaml y perfiles
+│   └── src/main/java/com/gamermood/backend/
+│       ├── config/
+│       ├── controller/
+│       ├── dto/
+│       ├── entity/
+│       ├── exception/
+│       ├── repository/
+│       ├── security/
+│       └── service/
 ├── database/
-│   └── schema/              # Script SQL inicial
+│   └── schema/
 ├── docs/
-│   ├── actas/               # Actas y documentación interna del equipo
-│   └── estructura-memoria-tfg.md
+│   └── actas/
 ├── frontend/
-│   ├── public/
 │   └── src/app/
-│       ├── components/      # Pantallas de la aplicación
-│       ├── guards/          # Protección de rutas privadas
-│       ├── interceptors/    # Interceptor para añadir JWT
-│       ├── models/          # Interfaces TypeScript
-│       └── services/        # Servicios de API y autenticación
+│       ├── components/
+│       ├── guards/
+│       ├── interceptors/
+│       ├── models/
+│       └── services/
 ├── docker-compose.yml
 ├── .env.example
 └── README.md
@@ -266,26 +263,24 @@ docker compose logs postgres
 docker compose down
 ```
 
-## Troubleshooting
+## Problemas habituales
 
-Si PostgreSQL no arranca, suele ser porque Docker no está iniciado o porque el puerto `5432` ya lo está usando otra instalación local de PostgreSQL. En ese caso se puede cambiar `DB_PORT` en `.env`.
+Si PostgreSQL no arranca, normalmente Docker no está iniciado o el puerto `5432` ya está ocupado por otra instalación local de PostgreSQL.
 
-Si el backend falla al arrancar con errores de validación de Hibernate, normalmente el esquema real de la base no coincide con `database/schema/01_init.sql`. Para un entorno limpio, lo más directo es recrear el volumen:
+Si el backend falla al arrancar con errores de Hibernate, suele significar que el esquema real de la base de datos no coincide con `database/schema/01_init.sql`. Para empezar desde cero:
 
 ```bash
 docker compose down -v
 docker compose up -d
 ```
 
-Si el frontend devuelve errores 401 o 403, conviene cerrar sesión y volver a entrar para renovar los tokens. También hay que comprobar que `JWT_SECRET` sea el mismo mientras el backend está en ejecución.
+Si el frontend devuelve 401 o 403, conviene cerrar sesión y volver a iniciar sesión. También hay que comprobar que el backend está usando el mismo `JWT_SECRET`.
 
-Si el frontend no conecta con la API, revisar que el backend esté levantado en `8081` y que `CORS_ALLOWED_ORIGINS` incluya `http://localhost:4200`.
+Si Groq no genera recomendaciones, revisar que `GROQ_API_KEY` esté configurada en `.env` y reiniciar el backend. Si la clave está vacía, el sistema seguirá funcionando con `REGLAS`.
 
-Si `npm install` falla, revisar la versión de Node. El proyecto se ha trabajado con Node 22 y npm 11.
+## Pruebas
 
-## Estado de pruebas
-
-Comandos usados para comprobar el proyecto:
+Comandos usados durante la revisión final:
 
 ```powershell
 cd backend
@@ -295,10 +290,7 @@ cd backend
 ```bash
 cd frontend
 npm test
-```
-
-También se puede lanzar el build del frontend con:
-
-```bash
 npm run build
 ```
+
+Además se probaron manualmente registro, login, creación de sesión, generación de recomendación, regeneración, feedback y eliminación de sesiones.
