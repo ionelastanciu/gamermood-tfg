@@ -1,6 +1,7 @@
-# Reparto inicial de responsabilidades
+# Reparto de responsabilidades
+-  Este reparto se utilizó como referencia durante el desarrollo, aunque varias tareas se revisaron de forma conjunta.
 
-## Mario - Backend y seguridad
+## Florin - Backend y seguridad
 Responsable de:
 - Spring Boot
 - estructura base de la API REST
@@ -12,7 +13,7 @@ Responsable de:
 - configuración segura y variables de entorno
 - soporte a integración Groq
 
-## Florin - Base de datos y lógica de dominio
+## Mario - Base de datos y lógica de dominio
 Responsable de:
 - modelo relacional PostgreSQL
 - entidades JPA/Hibernate
