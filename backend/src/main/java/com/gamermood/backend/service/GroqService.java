@@ -39,6 +39,14 @@ public class GroqService {
     }
 
     public String generarRecomendacion(String juego, String mood, int intensidad, String descripcion) {
+        return generarRecomendacion(juego, mood, intensidad, descripcion, false);
+    }
+
+    public String regenerarRecomendacion(String juego, String mood, int intensidad, String descripcion) {
+        return generarRecomendacion(juego, mood, intensidad, descripcion, true);
+    }
+
+    private String generarRecomendacion(String juego, String mood, int intensidad, String descripcion, boolean alternativa) {
         if (apiKey == null || apiKey.isBlank()) {
             log.info("GROQ_API_KEY no configurada. Usando recomendaciones por reglas.");
             return null;
@@ -47,10 +55,11 @@ public class GroqService {
         try {
             log.info("Intentando generar recomendación con Groq. modelo={}, maxTokens={}", model, maxTokens);
 
-            String prompt = construirPrompt(juego, mood, intensidad, descripcion);
+            String prompt = construirPrompt(juego, mood, intensidad, descripcion, alternativa);
             String cuerpoJson = objectMapper.writeValueAsString(Map.of(
                     "model", model,
                     "max_tokens", maxTokens,
+                    "temperature", alternativa ? 0.9 : 0.7,
                     "messages", List.of(
                             Map.of(
                                     "role", "system",
@@ -97,10 +106,17 @@ public class GroqService {
         }
     }
 
-    private String construirPrompt(String juego, String mood, int intensidad, String descripcion) {
-        return ("He jugado a %s. Mi estado de ánimo era '%s' con una intensidad de %d sobre 10. " +
+    private String construirPrompt(String juego, String mood, int intensidad, String descripcion, boolean alternativa) {
+        String base = ("He jugado a %s. Mi estado de ánimo era '%s' con una intensidad de %d sobre 10. " +
                 "Descripción: %s. Dame 3 recomendaciones breves y concretas para mi próxima sesión.")
                 .formatted(juego, mood, intensidad, descripcion != null ? descripcion : "sin descripción");
+
+        if (!alternativa) {
+            return base;
+        }
+
+        return base + " El usuario ha pedido una nueva recomendación porque la anterior no le resultó útil. " +
+                "Propón una alternativa diferente, evitando repetir consejos genéricos o demasiado parecidos.";
     }
 
     private String extraerTextoRespuesta(String json) throws Exception {

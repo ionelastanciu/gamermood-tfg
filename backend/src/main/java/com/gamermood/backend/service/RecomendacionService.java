@@ -74,7 +74,7 @@ public class RecomendacionService {
                     recomendacionRepository.delete(existente);
                 });
 
-        String texto = groqService.generarRecomendacion(
+        String texto = groqService.regenerarRecomendacion(
                 sesion.getGame(),
                 sesion.getMood(),
                 sesion.getIntensity(),
