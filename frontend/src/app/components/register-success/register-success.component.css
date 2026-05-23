@@ -1,0 +1,39 @@
+.success-box {
+  text-align: center;
+}
+
+.success-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.success-icon svg {
+  width: 5rem;
+  height: 5rem;
+  color: #81c784;
+  stroke-width: 1.5;
+}
+
+.success-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.success-subtitle {
+  color: #d1d5db;
+  margin-bottom: 0.75rem;
+}
+
+.success-hint {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  margin-bottom: 2rem;
+}
+
+.countdown-text {
+  font-size: 0.78rem;
+  color: #6b7280;
+  margin-top: 1rem;
+}

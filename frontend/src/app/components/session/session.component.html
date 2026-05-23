@@ -1,0 +1,247 @@
+<div class="session-container">
+    <a routerLink="/dashboard" class="back-home anim-slide-left">
+        <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M19 12H5M12 19l-7-7 7-7"></path>
+        </svg>
+        Mis sesiones
+    </a>
+
+    <div class="session-content">
+        <div class="session-header anim-fade-up">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="8" r="7"></circle>
+                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+            </svg>
+            <h2>¿Cómo fue tu Sesión?</h2>
+            <p>Cuéntanos tu experiencia para darte los mejores consejos</p>
+        </div>
+
+        <div class="session-form anim-scale-in anim-d1">
+            @if (errorMessage) {
+                <div class="session-error-banner">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16" style="flex-shrink:0">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    {{ errorMessage }}
+                </div>
+            }
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                <div class="form-section">
+                    <div class="section-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        <span>¿Cómo te sientes ahora?</span>
+                    </div>
+
+                    <div class="mood-grid">
+                        <button type="button"
+                                class="mood-btn happy"
+                                [class.selected]="f['mood'].value === 'happy'"
+                                (click)="selectMood('happy')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                            </svg>
+                            <p>Genial</p>
+                        </button>
+
+                        <button type="button"
+                                class="mood-btn neutral"
+                                [class.selected]="f['mood'].value === 'neutral'"
+                                (click)="selectMood('neutral')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="8" y1="15" x2="16" y2="15"></line>
+                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                            </svg>
+                            <p>Normal</p>
+                        </button>
+
+                        <button type="button"
+                                class="mood-btn sad"
+                                [class.selected]="f['mood'].value === 'sad'"
+                                (click)="selectMood('sad')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
+                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                            </svg>
+                            <p>Frustrado</p>
+                        </button>
+                    </div>
+
+                    @if (submitted && f['mood'].invalid) {
+                        <span class="field-error">Selecciona cómo te sientes.</span>
+                    }
+                </div>
+                <div class="form-section">
+                    <div class="section-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M6 12h12M12 6v12"></path>
+                            <rect x="2" y="7" width="20" height="10" rx="2"></rect>
+                        </svg>
+                        <span>¿A qué has jugado?</span>
+                    </div>
+                    <select #gameSelect
+                            class="game-select"
+                            [class.input-error]="submitted && f['game'].invalid"
+                            (change)="onGameSelect(gameSelect.value)">
+                        <option value="" disabled selected>Selecciona el juego...</option>
+                        <optgroup label="FPS / Disparos">
+                            <option value="Valorant">Valorant</option>
+                            <option value="CS2">CS2 (Counter-Strike 2)</option>
+                            <option value="Apex Legends">Apex Legends</option>
+                            <option value="Call of Duty: Warzone">Call of Duty: Warzone</option>
+                            <option value="Overwatch 2">Overwatch 2</option>
+                            <option value="Rainbow Six Siege">Rainbow Six Siege</option>
+                        </optgroup>
+                        <optgroup label="Battle Royale">
+                            <option value="Fortnite">Fortnite</option>
+                            <option value="PUBG: Battlegrounds">PUBG: Battlegrounds</option>
+                        </optgroup>
+                        <optgroup label="MOBA / Estrategia">
+                            <option value="League of Legends">League of Legends</option>
+                            <option value="Dota 2">Dota 2</option>
+                            <option value="Teamfight Tactics">Teamfight Tactics</option>
+                            <option value="Hearthstone">Hearthstone</option>
+                        </optgroup>
+                        <optgroup label="RPG / Aventura">
+                            <option value="Elden Ring">Elden Ring</option>
+                            <option value="The Witcher 3">The Witcher 3</option>
+                            <option value="Cyberpunk 2077">Cyberpunk 2077</option>
+                            <option value="Zelda: Tears of the Kingdom">Zelda: Tears of the Kingdom</option>
+                            <option value="God of War Ragnarök">God of War Ragnarök</option>
+                            <option value="Red Dead Redemption 2">Red Dead Redemption 2</option>
+                        </optgroup>
+                        <optgroup label="Roguelike / Indie">
+                            <option value="Hades">Hades</option>
+                            <option value="Celeste">Celeste</option>
+                            <option value="Hollow Knight">Hollow Knight</option>
+                            <option value="Dead Cells">Dead Cells</option>
+                            <option value="Slay the Spire">Slay the Spire</option>
+                        </optgroup>
+                        <optgroup label="Simulación / Sandbox">
+                            <option value="Minecraft">Minecraft</option>
+                            <option value="Stardew Valley">Stardew Valley</option>
+                            <option value="The Sims 4">The Sims 4</option>
+                            <option value="Animal Crossing: New Horizons">Animal Crossing: New Horizons</option>
+                        </optgroup>
+                        <optgroup label="Deportes / Carreras">
+                            <option value="EA Sports FC 25">EA Sports FC 25</option>
+                            <option value="Rocket League">Rocket League</option>
+                            <option value="Gran Turismo 7">Gran Turismo 7</option>
+                            <option value="Forza Horizon 5">Forza Horizon 5</option>
+                        </optgroup>
+                        <optgroup label="Lucha">
+                            <option value="Tekken 8">Tekken 8</option>
+                            <option value="Street Fighter 6">Street Fighter 6</option>
+                            <option value="Mortal Kombat 1">Mortal Kombat 1</option>
+                        </optgroup>
+                        <optgroup label="Terror / Horror">
+                            <option value="Resident Evil 4 Remake">Resident Evil 4 Remake</option>
+                            <option value="Dead by Daylight">Dead by Daylight</option>
+                            <option value="Phasmophobia">Phasmophobia</option>
+                        </optgroup>
+                        <optgroup label="MMO / Online">
+                            <option value="World of Warcraft">World of Warcraft</option>
+                            <option value="Final Fantasy XIV">Final Fantasy XIV</option>
+                        </optgroup>
+                        <option value="other">✏️ Otros...</option>
+                    </select>
+                    @if (showOtherGame) {
+                        <input
+                            type="text"
+                            class="game-other-input"
+                            [class.input-error]="submitted && f['game'].invalid"
+                            placeholder="Escribe el nombre del juego..."
+                            (input)="onOtherGameInput(otherGame.value)"
+                            #otherGame>
+                    }
+                    @if (submitted && f['game'].invalid) {
+                        <span class="field-error">Indica el juego de la sesión.</span>
+                    }
+                </div>
+                <div class="form-section">
+                    <div class="section-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        <span>Intensidad emocional</span>
+                    </div>
+
+                    <div class="intensity-hud">
+                        <div class="intensity-value-row">
+                            <span class="intensity-digit"
+                                  [class.low]="f['intensity'].value <= 3"
+                                  [class.mid]="f['intensity'].value > 3 && f['intensity'].value <= 6"
+                                  [class.high]="f['intensity'].value > 6">
+                                {{ f['intensity'].value }}
+                            </span>
+                            <span class="intensity-max">/10</span>
+                        </div>
+
+                        <div class="intensity-bars">
+                            @for (seg of intensitySegments; track seg) {
+                                <div class="ibar"
+                                     [class.active]="f['intensity'].value >= seg"
+                                     [class.ibar-low]="seg <= 3"
+                                     [class.ibar-mid]="seg > 3 && seg <= 6"
+                                     [class.ibar-high]="seg > 6">
+                                </div>
+                            }
+                        </div>
+
+                        <input class="intensity-slider"
+                               type="range"
+                               id="intensity"
+                               formControlName="intensity"
+                               min="1" max="10">
+                    </div>
+                </div>
+                <div class="form-section">
+                    <div class="section-label">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <span>Cuéntanos tu experiencia</span>
+                    </div>
+                    <textarea
+                        id="experience"
+                        formControlName="experience"
+                        [class.input-error]="submitted && f['experience'].invalid"
+                        placeholder="¿Qué pasó? ¿Cómo te sentiste? Desahógate aquí..."></textarea>
+                    @if (submitted && f['experience'].invalid) {
+                        <span class="field-error">Describe brevemente tu experiencia.</span>
+                    }
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-reset" (click)="resetForm()" title="Limpiar todos los campos">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                            <path d="M3 3v5h5"/>
+                        </svg>
+                        Limpiar
+                    </button>
+                    <button type="submit" class="btn-submit" [disabled]="isLoading || (submitted && form.invalid)">
+                        @if (isLoading) {
+                            Guardando sesión...
+                        } @else {
+                            <svg class="icon-bolt-lg" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                            </svg>
+                            Guardar Sesión
+                        }
+                    </button>
+                </div>
+                <p class="form-save-note">Tu sesión se guardará en el historial y recibirás recomendaciones personalizadas</p>
+
+            </form>
+        </div>
+    </div>
+</div>
